@@ -59,6 +59,11 @@ export const pageSchema = {
       name: "description",
     },
     {
+      name: "featuredMedia",
+      type: "media",
+      group: "seo",
+    },
+    {
       type: "array",
       name: "sections",
       group: "content",
@@ -80,49 +85,9 @@ export const pageSchema = {
                       name: "title",
                     },
                     {
-                      type: "object",
                       name: "media",
-                      fields: [
-                        {
-                          type: "string",
-                          name: "type",
-                          title: "Type",
-                          options: {
-                            list: ["image", "video"],
-                            layout: "radio",
-                            direction: "horizontal",
-                          },
-                          initialValue: "image",
-                        },
-                        {
-                          name: "mood",
-                          title: "Mood Video",
-                          description: "Automatic playback without audio. Videos should be max. 10 seconds long.",
-                          type: "file",
-                        },
-                        {
-                          name: "player",
-                          title: "Video Player",
-                          description:
-                            "Video Player with all playback controls. If combined with a mood video, the mood video will replace the image poster.",
-                          type: "file",
-                        },
-                        {
-                          name: "image",
-                          type: "image",
-                          options: {
-                            hotspot: true,
-                          },
-                        },
-                      ],
-                      preview: {
-                        select: {
-                          type: "type",
-                          mood: "mood.asset.playbackId",
-                          player: "player.asset.playbackId",
-                          image: "image",
-                        },
-                      },
+                      type: "media",
+                      group: "seo",
                     },
                     {
                       name: "caption",

@@ -1,13 +1,14 @@
 import { createConfig } from "./src/create-config";
 import { pageSchema } from "./data/documents/page";
-import { localStringQuery } from "./data/objects/locale-string";
+import { localStringProjection, mediaProjection } from "./data/objects";
 
 export default createConfig({
   documents: {
     page: pageSchema,
   },
   resolveTypes: {
-    localeString: localStringQuery,
+    localeString: localStringProjection,
+    media: mediaProjection,
   },
   createQueries: {
     getPages: (documents) => /* groq */ `

@@ -1,4 +1,6 @@
-export const localeString = {
+import { TypeProjection } from "./../../src/types";
+
+export const localeStringSchema = {
   type: "object",
   name: "localeString",
   fieldsets: [
@@ -23,6 +25,6 @@ export const localeString = {
   ],
 };
 
-export const localStringQuery = (name: string) => /* groq */ `
+export const localStringProjection: TypeProjection = (name: string) => /* groq */ `
     "${name}": coalesce(${name}[$lang], ${name}.en)
 `;
