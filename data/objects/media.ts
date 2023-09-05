@@ -1,4 +1,4 @@
-import { TypeProjection } from "./../../src/types";
+import { Resolver } from "./../../src/types";
 
 export const mediaSchema = {
   type: "object",
@@ -64,7 +64,7 @@ export const mediaSchema = {
   },
 };
 
-export const mediaProjection: TypeProjection = (name: string) => /* groq */ `
+export const mediaResolver: Resolver = (name: string) => /* groq */ `
     "${name}": {
       _type,
       type == 'image' => {

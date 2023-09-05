@@ -1,4 +1,4 @@
-import { TypeProjection } from "./../../src/types";
+import { Resolver } from "./../../src/types";
 
 export const localeStringSchema = {
   type: "object",
@@ -25,6 +25,6 @@ export const localeStringSchema = {
   ],
 };
 
-export const localStringProjection: TypeProjection = (name: string) => /* groq */ `
+export const localStringResolver: Resolver = (name: string) => /* groq */ `
     "${name}": coalesce(${name}[$lang], ${name}.en)
 `;
