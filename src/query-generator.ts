@@ -43,15 +43,13 @@ export class QueryGenerator {
       .reduce((acc: string, curr) => {
         const subFields = this.#getSubfields(curr);
 
-        if (curr.type === "array" && subFields) {
+        if (["array", "object"].includes(curr.type) && subFields) {
           if (this.#hasCustomField(this.#reduceTypes(curr))) {
-            return acc.concat(curr.name, `[]{\n ${this.#traverseAndSplat(subFields)} \n}, `);
-          } else {
-            return acc;
-          }
-        } else if (curr.type === "object" && subFields) {
-          if (this.#hasCustomField(this.#reduceTypes(curr))) {
-            return acc.concat(curr.name, `{\n ${this.#traverseAndSplat(subFields)} \n}, `);
+            if (curr.type === "array") {
+              return acc.concat(curr.name, `[]{\n ${this.#traverseAndSplat(subFields)} \n}, `);
+            } else {
+              return acc.concat(curr.name, `{\n ${this.#traverseAndSplat(subFields)} \n}, `);
+            }
           } else {
             return acc;
           }
@@ -69,7 +67,7 @@ export class QueryGenerator {
       .reduce((acc: string, curr) => {
         const subFields = this.#getSubfields(curr);
 
-        if (curr.type === "array" && subFields) {
+        if ("array" && subFields) {
           return acc.concat(curr.name, `[]{\n ${this.#traverse(subFields)} \n}, `);
         } else if (curr.type === "object" && subFields) {
           return acc.concat(curr.name, `{\n ${this.#traverse(subFields)} \n}, `);

@@ -7,19 +7,19 @@ export default createConfig({
     page: pageSchema,
   },
   resolveTypes: {
-    // localeString: localStringResolver,
-    // media: mediaResolver,
+    localeString: localStringResolver,
+    media: mediaResolver,
   },
   createQueries: {
     getPages: (documents) => /* groq */ `
-          *[_type == "${documents.page.type}"] {
-            ${documents.page.groq}
-          }
-        `,
+        *[_type == "${documents.page.type}"] {
+          ${documents.page.groq}
+        }
+      `,
     getPageBySlug: (documents) => /* groq */ `
-          *[_type == "${documents.page.type}" && slug == $slug] {
-            ${documents.page.groq}
-          }[0]
-        `,
+        *[_type == "${documents.page.type}" && slug == $slug] {
+          ${documents.page.groq}
+        }[0]
+      `,
   },
 });
