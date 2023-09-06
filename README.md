@@ -1,14 +1,14 @@
 
 # Sanity Generator
 
-A codegen tool for [Sanity](https://www.sanity.io) to autogenerate GROQ queries.
+Sanity Generator is a codegen tool for [Sanity](https://www.sanity.io) to automatically generate GROQ queries from a schema perspective.
 
-*Currently in beta status.*
+**Note: Currently in beta. Be cautious when using it in production.**
 
-## Minamal Config
+## Minimal Configuration
 
-Sanity Generator works from a schema first perspective. For aminimal config, you need to specify all documents schemas and define their corresponding queries. 
-
+To get started, define your document schemas and queries like this:
+ 
 ```TypeScript
 // sanity-generator.config.ts
 export default createConfig({
@@ -25,7 +25,7 @@ export default createConfig({
 });
 ```
 
-If you run `$ yarn sanity-generate`, you just get a query with a "naked projection".
+When you run `$ yarn sanity-generate`, it creates queries with a spread operator to return all fields. 
 
 ```TypeScript
 // sanity-generator/queries/getPages.ts
@@ -36,11 +36,12 @@ export const getPages = /* groq */ `
 `
 ```
 
-## Resolve Types (Aka. The Actual Use Case)
-You can specify resolver, which is a function that returns a GROQ projection, for field types that exist in the sanity schema.
+## Resolver for Custom Types (aka.  the actual use case)
+
+Define resolvers for field types from your Sanity schema. These resolvers are functions that return custom GROQ projections:
 
 ```TypeScript
-//sanity-generator.config.ts
+// sanity-generator.config.ts
 export default createConfig({
   schemas: {
     page: pageSchema,
@@ -48,7 +49,7 @@ export default createConfig({
   resolvers: {
     // Resolve all field types of "localString" with this projection...
     localeString: (name: string) => /* groq */ `
-        "${name}": coalesce(${name}[$lang], ${name}.en)
+      "${name}": coalesce(${name}[$lang], ${name}.en)
     `,
   },
   queries: {
@@ -60,7 +61,8 @@ export default createConfig({
   },
 });
 ```
-If you now run `$ yarn sanity-generate`, the projection will expanded to reach all types that have a custom resolver.
+
+If you run `$ yarn sanity-generate` now, it expands the projection to transform all types with their associated resolver:
 
 ```TypeScript
 // sanity-generator/queries/getPages.ts
@@ -82,6 +84,5 @@ export const getPages = /* groq */  `
     }
   }
 }
-
 `
 ```
