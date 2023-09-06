@@ -2,17 +2,25 @@
   "name": "sanity-generator",
   "private": true,
   "version": "0.0.0",
+  "main": "./dist/cli.js",
+  "module": "./dist/cli.mjs",
+  "typings": "dist/cli.d.ts",
+  "bin": {
+    "sanity-generator": "echo implement this..."
+  },
   "scripts": {
-    "dev": "npx nodemon src/cli.ts",
+    "dev": "npx nodemon --exec ts-node -- src/cli --config ./playground/sanity-generator.config.ts",
     "dev:sanity": "cd ./playground/sanity && sanity dev",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "rollup -c",
+    "preview": "ts-node ./dist/bundle.js --config ./playground/sanity-generator.config.ts"
   },
   "devDependencies": {
     "groqfmt-nodejs": "^0.0.4",
     "prettier": "^3.0.2",
     "prettier-plugin-groq": "^0.2.5",
-    "typescript": "^5.1.6",
-    "vite": "^4.4.5"
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "commander": "^11.0.0"
   }
 }

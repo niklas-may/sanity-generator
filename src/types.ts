@@ -5,9 +5,9 @@ export type Field = {
   fields?: Field[];
 };
 
-export type Projection = {
-  type: string;
-  groq: string;
+export type ProcessedSchema = {
+  name: string;
+  projection: string;
 };
 
 type CreateProjections = object;
@@ -15,15 +15,18 @@ type CreateProjections = object;
 export type Resolver = (fieldName: string) => string;
 
 export type Config<T extends CreateProjections> = {
-  documents: T;
-  createQueries: CreateQueries<T>;
-  resolveTypes?: Record<string, Resolver>;
+  schemas: T;
+  queries: QueriesConfig<T>;
+  resolvers?: Record<string, Resolver>;
 };
 
-export type CreateQueries<T extends object> = Record<string, (ctx: Record<keyof T, Projection>) => string>;
+export type QueriesConfig<T extends object> = Record<
+  string,
+  (ctx: { schemas: Record<keyof T, ProcessedSchema> }) => string
+>;
 
 export type CreateConfigReturn<T extends Record<string, any>> = Config<T>;
 
 export type Options = {
-  outPath?: string
-}
+  outPath?: string;
+};

@@ -12,13 +12,13 @@ Sanity Generator works from a schema first perspective. For aminimal config, you
 ```TypeScript
 // sanity-generator.config.ts
 export default createConfig({
-  documents: {
+  schemas: {
     page: pageSchema,
   },
-  createQueries: {
-    getPages: (documents) => /* groq */ `
-        *[_type == "${documents.page.type}"] {
-          ${documents.page.groq}
+  queries: {
+    getPages: ({ schemas }) => /* groq */ `
+        *[_type == "${schemas.page.name}"] {
+          ${schemas.page.projection}
         }
       `,
   },
@@ -36,25 +36,25 @@ export const getPages = /* groq */ `
 `
 ```
 
-## Resolve Types (aka. the actual use case)
+## Resolve Types (Aka. The Actual Use Case)
 You can specify resolver, which is a function that returns a GROQ projection, for field types that exist in the sanity schema.
 
 ```TypeScript
 //sanity-generator.config.ts
 export default createConfig({
-  documents: {
+  schemas: {
     page: pageSchema,
   },
-  resolveTypes: {
+  resolvers: {
     // Resolve all field types of "localString" with this projection...
     localeString: (name: string) => /* groq */ `
         "${name}": coalesce(${name}[$lang], ${name}.en)
     `,
   },
-  createQueries: {
-    getPages: (documents) => /* groq */ `
-        *[_type == "${documents.page.type}"] {
-          ${documents.page.groq}
+  queries: {
+    getPages: ({ schemas }) => /* groq */ `
+        *[_type == "${schemas.page.name}"] {
+          ${schemas.page.projection}
         }
       `,
   },

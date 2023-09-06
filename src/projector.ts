@@ -1,6 +1,6 @@
 import type { Resolver, Field } from "./types";
 
-export class QueryGenerator {
+export class Projector {
   typeResolver: Record<string, Resolver>;
   customTypes: Set<string>;
 
@@ -37,7 +37,7 @@ export class QueryGenerator {
     }, prevAcc ?? []);
   }
 
-  #traverseAndSplat(fields: Array<Field>): string {
+  #projectNodeAndSpread(fields: Array<Field>): string {
     return fields
       .sort((a) => (this.#isCustomType(a.type) || this.#getSubfields(a) ? 1 : -1))
       .reduce((acc: string, curr) => {
@@ -46,9 +46,9 @@ export class QueryGenerator {
         if (["array", "object"].includes(curr.type) && subFields) {
           if (this.#hasCustomField(this.#reduceTypes(curr))) {
             if (curr.type === "array") {
-              return acc.concat(curr.name, `[]{\n ${this.#traverseAndSplat(subFields)} \n}, `);
+              return acc.concat(curr.name, `[]{\n ${this.#projectNodeAndSpread(subFields)} \n}, `);
             } else {
-              return acc.concat(curr.name, `{\n ${this.#traverseAndSplat(subFields)} \n}, `);
+              return acc.concat(curr.name, `{\n ${this.#projectNodeAndSpread(subFields)} \n}, `);
             }
           } else {
             return acc;
@@ -61,27 +61,35 @@ export class QueryGenerator {
       }, "...,\n");
   }
 
-  #traverse(fields: Array<Field>): string {
+  #projectNode(fields: Array<Field>): string {
     return fields
       .sort((a) => (this.#isCustomType(a.type) || this.#getSubfields(a) ? 1 : -1))
       .reduce((acc: string, curr) => {
         const subFields = this.#getSubfields(curr);
 
         if ("array" && subFields) {
-          return acc.concat(curr.name, `[]{\n ${this.#traverse(subFields)} \n}, `);
+          return acc.concat(curr.name, `[]{\n ${this.#projectNode(subFields)} \n}, `);
         } else if (curr.type === "object" && subFields) {
-          return acc.concat(curr.name, `{\n ${this.#traverse(subFields)} \n}, `);
+          return acc.concat(curr.name, `{\n ${this.#projectNode(subFields)} \n}, `);
         } else {
           return acc.concat(`${curr.name}`, ",\n");
         }
       }, "");
   }
 
-  create(document: { name: string; fields: Field[] }) {
-    return this.#traverse(document.fields);
+  projectDocument(document: { name: string; fields: Field[] }) {
+    if (!Array.isArray(document?.fields)) {
+      console.warn("Fields Proerty is required");
+      return "";
+    }
+    return this.#projectNode(document.fields);
   }
 
-  createSpalt(document: { name: string; fields: Field[] }) {
-    return this.#traverseAndSplat(document.fields);
+  projectAndSpreadDocument(document: { name: string; fields: Field[] }) {
+    if (!Array.isArray(document?.fields)) {
+      console.warn("Fields Proerty is required");
+      return "";
+    }
+    return this.#projectNodeAndSpread(document.fields);
   }
 }

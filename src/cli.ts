@@ -1,11 +1,17 @@
 import path from "path";
+import { program } from "commander";
 import { main } from "./main";
 
-export function cli() {
-  const config = require(path.resolve(process.cwd(), "sanity-generator.config.ts")).default;
-  if (config) {
-    main(config);
-  }
-}
+program
+  .name("Sanity Generator")
+  .option("-c, --config <file-path>", "Path to the configuration file")
+  .action(({ config }) => {
+    try {
+      const configObject = require(path.resolve(process.cwd(), config ?? "sanity-generator.config.ts")).default;
+      main(configObject);
+    } catch (e) {
+      console.error(e);
+    }
+  });
 
-cli()
+program.parse(process.argv);

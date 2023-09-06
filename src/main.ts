@@ -1,26 +1,24 @@
 import { format } from "groqfmt-nodejs";
-import { QueryGenerator } from "./query-generator";
-import type { Projection, Config } from "./types";
+import { Projector } from "./projector";
+import type { ProcessedSchema, Config } from "./types";
 
 export async function main<T extends Record<string, any>>(config: Config<T>) {
-  const writer = new QueryGenerator(config.resolveTypes);
-  const queries: Record<string, Projection> = {};
+  const projector = new Projector(config.resolvers);
+  const processedScheams = {} as Record<keyof T, ProcessedSchema>;
 
-  for (const key in config.documents) {
-    const k = key as keyof typeof config.documents;
-    const doc = config.documents[k];
-    
-    queries[key] = {
-      type: doc.name,
-      groq: writer.createSpalt(doc),
+  for (const key in config.schemas) {
+    const k = key as keyof typeof config.schemas;
+    const doc = config.schemas[k];
+
+    processedScheams[key] = {
+      name: doc.name,
+      projection: projector.projectAndSpreadDocument(doc),
     };
   }
 
-  for (const [key, value] of Object.entries(config.createQueries)) {
-    //@ts-ignore
-    const query = value(queries);
+  for (const [queryName, queryFn] of Object.entries(config.queries)) {
+    const query = queryFn({ schemas: processedScheams });
 
-    console.log(key, await format(query));
+    console.log(queryName, await format(query));
   }
 }
-
