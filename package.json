@@ -1,26 +1,46 @@
 {
   "name": "sanity-generator",
   "private": true,
-  "version": "0.0.0",
-  "main": "./dist/cli.js",
-  "module": "./dist/cli.mjs",
-  "typings": "dist/cli.d.ts",
+  "version": "0.0.1",
+  "main": "./build/cli.js",
+  "typings": "./build/cli.d.ts",
   "bin": {
-    "sanity-generator": "echo implement this..."
+    "sanity-generator": "build/cli.js"
   },
   "scripts": {
     "dev": "npx nodemon --exec ts-node -- src/cli --config ./playground/sanity-generator.config.ts",
     "dev:sanity": "cd ./playground/sanity && sanity dev",
-    "build": "rollup -c",
-    "preview": "ts-node ./dist/bundle.js --config ./playground/sanity-generator.config.ts"
+    "build": "rimraf ./build && tsc",
+    "preview": "node build/cli.js --config ./playground/sanity-generator.config.ts"
   },
   "devDependencies": {
     "groqfmt-nodejs": "^0.0.4",
     "prettier": "^3.0.2",
     "prettier-plugin-groq": "^0.2.5",
-    "typescript": "^5.1.6"
+    "rimraf": "^5.0.1",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
-    "commander": "^11.0.0"
-  }
+    "commander": "^11.0.0",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "description": "Sanity Generator is a codegen tool for [Sanity](https://www.sanity.io) to automatically generate GROQ queries from a schema perspective.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niklas-may/sanity-generator.git"
+  },
+  "keywords": [
+    "sanity",
+    "cms",
+    "groq",
+    "codegen"
+  ],
+  "author": "Niklas May <post@niklas-may.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/niklas-may/sanity-generator/issues"
+  },
+  "homepage": "https://github.com/niklas-may/sanity-generator#readme"
 }

@@ -25,7 +25,7 @@ export default createConfig({
 });
 ```
 
-When you run `$ yarn sanity-generate`, it creates queries with a spread operator to return all fields. 
+When you run `$ npx sanity-generator`, it creates queries with a spread operator to return all fields. 
 
 ```TypeScript
 // sanity-generator/queries/getPages.ts
@@ -62,7 +62,7 @@ export default createConfig({
 });
 ```
 
-If you run `$ yarn sanity-generate` now, it expands the projection to transform all types with their associated resolver:
+If you run `$ npx sanity-generator` now, it expands the projection to transform all types with their associated resolver:
 
 ```TypeScript
 // sanity-generator/queries/getPages.ts
