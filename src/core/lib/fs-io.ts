@@ -3,16 +3,7 @@ import * as prettier from "prettier";
 import { promises, mkdirSync, existsSync } from "fs";
 
 export function createMissingDirectories(targetPath: string) {
-  const folders = path.join(targetPath, '/').split(path.sep).filter(Boolean);
-  let currentPath = "";
-
-  for (const folder of folders) {
-    currentPath = path.join(currentPath, '/', folder);
-
-    if (!existsSync(currentPath)) {
-      mkdirSync(currentPath);
-    }
-  }
+  mkdirSync(targetPath, { recursive: true });
 }
 
 export async function prettifyTypeScript(code: string) {

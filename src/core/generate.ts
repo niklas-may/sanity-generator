@@ -1,10 +1,11 @@
 import type { ProcessedSchema, Config, Options, Resolver } from "./../types";
-import { format } from "groqfmt-nodejs";
 import path from "path";
+import { consola } from "consola";
+
 import { rimrafSync } from "rimraf";
 import serializeJs from "serialize-javascript";
 import { Projector } from "./projector";
-import { mergeOptions, createMissingDirectories, writeTypeScript } from "./lib";
+import { mergeOptions, createMissingDirectories, writeTypeScript, prettifyGroq } from "./lib";
 
 function processSchema<T extends Record<string, any>>(config: Config<T>, options?: Options) {
   const projector = new Projector(config.resolvers);
@@ -33,6 +34,9 @@ function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, 
 
   names.forEach((t) => (resolverCode += `export const ${t} = ${serializeJs(resolvers[t])}; \n \n`));
   writeTypeScript(path.resolve(dir, "index.ts"), resolverCode);
+
+  consola.info(`${names.size} resolver writtern to disk`);
+
 }
 
 export async function generate<T extends Record<string, any>>(config: Config<T>, options?: Options) {
@@ -41,18 +45,27 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
   rimrafSync(`${opts.outPath}/*`, { glob: true });
   createMissingDirectories(path.join(opts.outPath, "queries"));
 
-  const { schemas } = processSchema(config, {inlineResolver: true});
+  const { schemas } = processSchema(config, { inlineResolver: true });
 
-  for (const [queryName, queryFn] of Object.entries(config.queries)) {
+  consola.info("Validating Queries");
+
+  for (const [_, queryFn] of Object.entries(config.queries)) {
     const queryString = queryFn({ schemas: schemas });
 
-    const query = await format(queryString);
+    await prettifyGroq(queryString);
+  }
 
-    if (opts?.inlineResolver === true) {
+  if (opts?.inlineResolver === true) {
+    for (const [queryName, queryFn] of Object.entries(config.queries)) {
+      const queryString = queryFn({ schemas: schemas });
+
+      const query = await prettifyGroq(queryString);
+
       const code = `export const ${queryName} = /* groq */\`\n${query}\``;
       const filePath = path.resolve(opts.outPath, "queries", `${queryName}.ts`);
       writeTypeScript(filePath, code);
     }
+    consola.info(`${Object.entries(config.queries).length} queries writtern to disk`);
   }
 
   if (opts?.inlineResolver === false) {
@@ -62,7 +75,7 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
     wirteResolver(types, config.resolvers, path.join(opts.outPath, "resolver"));
 
     for (const [queryName, queryFn] of Object.entries(config.queries)) {
-      const queryTemplate = await format(queryFn({ schemas: schemas }));
+      const queryTemplate = await prettifyGroq(queryFn({ schemas: schemas }));
       const { query, resolverDependencies } = Projector.insertResolver(queryTemplate);
 
       const code = [
@@ -75,5 +88,8 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
       const filePath = path.resolve(opts.outPath, "queries", `${queryName}.ts`);
       writeTypeScript(filePath, code);
     }
+
+    consola.info(`${Object.entries(config.queries).length} queries writtern to disk`);
+
   }
 }

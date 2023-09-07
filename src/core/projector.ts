@@ -1,4 +1,5 @@
 import type { Resolver, Field } from "../types";
+import { consola } from "consola";
 
 type TraversalArguments = { fields: Array<Field>; foundTypes?: Set<string>; inline: boolean };
 
@@ -105,15 +106,21 @@ export class Projector {
   }
 
   projectDocument(document: { name: string; fields: Field[] }) {
-    if (!Array.isArray(document?.fields)) {
-      console.warn("Fields Proerty is required");
-      return "";
+    try {
+      if (!Array.isArray(document?.fields)) throw new Error("Fields Proerty is required");
+      return this.#projectNode(document.fields);
+    } catch (e) {
+      consola.error(e);
     }
-    return this.#projectNode(document.fields);
   }
 
   projectAndSpreadDocument(document: { name: string; fields: Field[] }, options: { inline: boolean }) {
-    return this.#projectNodeAndSpread({ fields: document.fields, inline: options.inline  });
+    try {
+      if (!Array.isArray(document?.fields)) throw new Error("Fields Proerty is required");
+      return this.#projectNodeAndSpread({ fields: document.fields, inline: options.inline });
+    } catch (e) {
+      consola.error(e);
+    }
   }
 
   static insertResolver(query: string) {
