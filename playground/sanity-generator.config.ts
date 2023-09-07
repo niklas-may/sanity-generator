@@ -1,6 +1,6 @@
-import { createConfig } from "../src/create-config";
-import { pageSchema } from "./data/documents";
-import { localStringResolver, mediaResolver } from "./data/objects";
+import { createConfig } from "../src";
+import { pageSchema } from "./schemas/documents";
+import { localStringResolver, mediaResolver } from "./schemas/objects";
 
 export default createConfig({
   schemas: {
