@@ -25,8 +25,9 @@ export type QueriesConfig<T extends object> = Record<
   (ctx: { schemas: Record<keyof T, ProcessedSchema> }) => string
 >;
 
-export type CreateConfigReturn<T extends Record<string, any>> = Config<T>;
+export type CreateConfigReturn<T extends Record<string, any>> = [Config<T>, Options?];
 
 export type Options = {
   outPath?: string;
 };
+

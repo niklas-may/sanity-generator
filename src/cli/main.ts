@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+import { CreateConfigReturn } from '../types';
 
 import path from "path";
 import fs from "fs";
@@ -32,8 +33,8 @@ program
           "Sanity Generator config missing. Use --config <filename>  run init to generate a config file."
         );
 
-      const configObject = require(path.resolve(process.cwd(), filePath)).default;
-      generate(configObject);
+      const configObject = require(path.resolve(process.cwd(), filePath)).default as CreateConfigReturn<object>;
+      generate(...configObject);
     } catch (e) {
       consola.error(e);
     }

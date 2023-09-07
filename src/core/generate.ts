@@ -1,9 +1,13 @@
-import { format } from "groqfmt-nodejs";
-import { Projector } from "./projector";
-import type { ProcessedSchema, Config } from "./../types";
-import { consola } from "consola";
+import type { ProcessedSchema, Config, Options } from "./../types";
 
-export async function generate<T extends Record<string, any>>(config: Config<T>) {
+import { format } from "groqfmt-nodejs";
+import path from "path";
+import { Projector } from "./projector";
+import { mergeOptions, createMissingDirectories, writeTypeScript } from "./lib";
+
+export async function generate<T extends Record<string, any>>(config: Config<T>, options?: Options) {
+  const opts = mergeOptions(options);
+
   const projector = new Projector(config.resolvers);
   const processedScheams = {} as Record<keyof T, ProcessedSchema>;
 
@@ -17,9 +21,12 @@ export async function generate<T extends Record<string, any>>(config: Config<T>)
     };
   }
 
+  createMissingDirectories(opts.outPath);
+
   for (const [queryName, queryFn] of Object.entries(config.queries)) {
     const query = queryFn({ schemas: processedScheams });
 
-    consola.info(queryName, await format(query));
+    const filePath = path.resolve(opts.outPath, `${queryName}.ts`);
+    writeTypeScript(filePath, `export const ${queryName} = /* groq */\`\n${await format(query)}\``);
   }
 }
