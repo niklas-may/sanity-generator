@@ -1,7 +1,7 @@
 {
   "name": "sanity-generator",
   "version": "0.0.2-2",
-  "main": "./build/cli/main.js",
+  "main": "./build/index.js",
   "typings": "./build/types/index.d.ts",
   "bin": {
     "sanity-generator": "build/cli/main.js",
@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "npx nodemon --ignore playground/sanity-generator/ --exec ts-node -- src/cli/main generate --config ./playground/sanity-generator.config.ts",
     "dev:sanity": "cd ./playground/sanity && sanity dev",
-    "build": "rimraf ./build && tsc && cp -r static build/static",
+    "build": "rimraf ./build && tsc && cp -r src/static build/static",
     "preview": "node build/cli/main.js generate --config ./playground/sanity-generator.config.ts"
   },
   "devDependencies": {
@@ -19,7 +19,6 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
     "commander": "^11.0.0",
     "consola": "^3.2.3",
     "defu": "^6.1.2",
