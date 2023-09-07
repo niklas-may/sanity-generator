@@ -8,7 +8,7 @@
     "sg": "build/cli/main.js"
   },
   "scripts": {
-    "dev": "npx nodemon --ignore playground/sanity-generator --exec ts-node -- src/cli/main generate --config ./playground/sanity-generator.config.ts",
+    "dev": "npx nodemon --ignore playground/sanity-generator/ --exec ts-node -- src/cli/main generate --config ./playground/sanity-generator.config.ts",
     "dev:sanity": "cd ./playground/sanity && sanity dev",
     "build": "rimraf ./build && tsc && cp -r static build/static",
     "preview": "node build/cli/main.js generate --config ./playground/sanity-generator.config.ts"
@@ -23,9 +23,10 @@
     "commander": "^11.0.0",
     "consola": "^3.2.3",
     "defu": "^6.1.2",
-    "fs-extra": "^11.1.1",
+    "groq-js": "^1.2.0",
     "groqfmt-nodejs": "^0.0.5",
     "prettier": "^3.0.3",
+    "serialize-javascript": "^6.0.1",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0"
   },
