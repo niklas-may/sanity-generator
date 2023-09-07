@@ -1,11 +1,11 @@
 {
   "name": "sanity-generator",
-  "version": "0.0.2-1",
+  "version": "0.0.2-2",
   "main": "./build/cli/main.js",
   "typings": "./build/types/index.d.ts",
   "bin": {
-    "sanity-generator": "build/cli.js",
-    "sg": "build/cli.js"
+    "sanity-generator": "build/cli/main.js",
+    "sg": "build/cli/main.js"
   },
   "scripts": {
     "dev": "npx nodemon --exec ts-node -- src/cli/main generate --config ./playground/sanity-generator.config.ts",
