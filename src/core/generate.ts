@@ -1,8 +1,9 @@
 import { format } from "groqfmt-nodejs";
 import { Projector } from "./projector";
-import type { ProcessedSchema, Config } from "./types";
+import type { ProcessedSchema, Config } from "./../types";
+import { consola } from "consola";
 
-export async function main<T extends Record<string, any>>(config: Config<T>) {
+export async function generate<T extends Record<string, any>>(config: Config<T>) {
   const projector = new Projector(config.resolvers);
   const processedScheams = {} as Record<keyof T, ProcessedSchema>;
 
@@ -19,6 +20,6 @@ export async function main<T extends Record<string, any>>(config: Config<T>) {
   for (const [queryName, queryFn] of Object.entries(config.queries)) {
     const query = queryFn({ schemas: processedScheams });
 
-    console.log(queryName, await format(query));
+    consola.info(queryName, await format(query));
   }
 }

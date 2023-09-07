@@ -113,6 +113,11 @@ brace-expansion@^2.0.1:
   dependencies:
     balanced-match "^1.0.0"
 
+chalk@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.3.0.tgz#67c20a7ebef70e7f3970a01f90fa210cb6860385"
+  integrity sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==
+
 color-convert@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-2.0.1.tgz#72d3a68d598c9bdb3af2ad1e84f21d896abd4de3"
@@ -129,6 +134,11 @@ commander@^11.0.0:
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-11.0.0.tgz#43e19c25dbedc8256203538e8d7e9346877a6f67"
   integrity sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==
+
+consola@^3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/consola/-/consola-3.2.3.tgz#0741857aa88cfa0d6fd53f1cff0375136e98502f"
+  integrity sha512-I5qxpzLv+sJhTVEoLYNcTW+bThDCPsit0vLNKShZx6rLtpilNpmmeTPaeqJb9ZE9dV3DGaeby6Vuhrw38WjeyQ==
 
 create-require@^1.1.0:
   version "1.1.1"
@@ -183,15 +193,12 @@ glob@^10.2.5:
     minipass "^5.0.0 || ^6.0.2 || ^7.0.0"
     path-scurry "^1.10.1"
 
-groq-js@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/groq-js/-/groq-js-0.2.0.tgz#abd4870014a1ccdf0936d5d75a78063aff9197c0"
-  integrity sha512-qJeuEgziddryH1ClsJvMoZM9aXNQbBViNZZrJwhHKr2wU8HGGM7uNWNVFglWXMX60MMaa2SClX3UohP76Ut68g==
-
-groqfmt-nodejs@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/groqfmt-nodejs/-/groqfmt-nodejs-0.0.4.tgz#3032f767517ace23ccee7b54528cc3b24c195505"
-  integrity sha512-XVUAktL7eDvame4y0gdEAVTuV5+SZtrcWicPlx2zi63Jkzi/mXLkr/aJBl2lPaAc4PEg00yOg0+typhGXA0fJQ==
+groqfmt-nodejs@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/groqfmt-nodejs/-/groqfmt-nodejs-0.0.5.tgz#c9a706339b947af093986a3776d73ddbac095169"
+  integrity sha512-mxsnz52vJQOeHgV56EzJQJCenwmH5FE7nJ4DRCCd/W3HFDTN78rOYMMEEGvsQkTutFKzE7q8LFndcIfUE3mWGQ==
+  dependencies:
+    mkdirp "^3.0.1"
 
 is-fullwidth-code-point@^3.0.0:
   version "3.0.0"
@@ -244,6 +251,11 @@ minimist@^1.2.6:
   resolved "https://registry.yarnpkg.com/minipass/-/minipass-7.0.3.tgz#05ea638da44e475037ed94d1c7efcc76a25e1974"
   integrity sha512-LhbbwCfz3vsb12j/WkWQPZfKTsgqIe1Nf/ti1pKjYESGLHIVjWU96G9/ljLH4F9mWNVhlQOm0VySdAWzf05dpg==
 
+mkdirp@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-3.0.1.tgz#e44e4c5607fb279c168241713cc6e0fea9adcb50"
+  integrity sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==
+
 path-key@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-3.1.1.tgz#581f6ade658cbba65a0d3380de7753295054f375"
@@ -256,18 +268,6 @@ path-scurry@^1.10.1:
   dependencies:
     lru-cache "^9.1.1 || ^10.0.0"
     minipass "^5.0.0 || ^6.0.2 || ^7.0.0"
-
-prettier-plugin-groq@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-groq/-/prettier-plugin-groq-0.2.5.tgz#7bfde0880fdbab476341e7c327fa1586ef07c9c3"
-  integrity sha512-oH2LC7Hi0RTSSs1g1kmzchV1MEKz9cSrSHL4/DWCli+vq1MV3m/EmFG4BWl+QTVcjnp3R357jbb8eX1ovtd/Bg==
-  dependencies:
-    groq-js "^0.2.0"
-
-prettier@^3.0.2:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.0.3.tgz#432a51f7ba422d1469096c0fdc28e235db8f9643"
-  integrity sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==
 
 rimraf@^5.0.1:
   version "5.0.1"

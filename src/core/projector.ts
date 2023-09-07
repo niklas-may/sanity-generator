@@ -1,12 +1,12 @@
-import type { Resolver, Field } from "./types";
+import type { Resolver, Field } from "../types";
 
 export class Projector {
-  typeResolver: Record<string, Resolver>;
+  resolvers: Record<string, Resolver>;
   customTypes: Set<string>;
 
-  constructor(typeResolver?: Record<string, Resolver>) {
-    this.typeResolver = typeResolver ?? {};
-    this.customTypes = new Set(Object.keys(this.typeResolver));
+  constructor(resolvers?: Record<string, Resolver>) {
+    this.resolvers = resolvers ?? {};
+    this.customTypes = new Set(Object.keys(this.resolvers));
   }
 
   #isCustomType(type: string) {
@@ -54,7 +54,7 @@ export class Projector {
             return acc;
           }
         } else if (this.#isCustomType(curr.type)) {
-          return acc.concat(`${this.typeResolver[curr.type](curr.name)}`, ",\n");
+          return acc.concat(`${this.resolvers[curr.type](curr.name)}`, ",\n");
         } else {
           return acc;
         }
