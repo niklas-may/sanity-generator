@@ -1,7 +1,7 @@
 import type { Resolver, DocumentOrField } from "../types";
 import { consola } from "consola";
 
-type TraversalArguments = { fields: Array<Field>; foundTypes?: Set<string>; inline: boolean };
+type TraversalArguments = { fields: Array<DocumentOrField>; foundTypes?: Set<string>; inline: boolean };
 
 export class Projector {
   resolvers: Record<string, Resolver>;
@@ -87,7 +87,7 @@ export class Projector {
     ];
   }
 
-  #projectNode(fields: Array<Field>): string {
+  #projectNode(fields: Array<DocumentOrField>): string {
     return fields
       .sort((a) => (this.#isCustomType(a.type) || this.#getSubfields(a) ? 1 : -1))
       .reduce((acc: string, curr) => {
