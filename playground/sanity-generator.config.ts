@@ -1,7 +1,7 @@
 import path from "path";
 import { createConfig } from "../src";
-import { pageSchema } from "./schemas/documents";
-import { localStringResolver, mediaResolver } from "./schemas/objects";
+import { pageSchema } from "./sanity/schemas/documents";
+import { localStringResolver, mediaResolver } from "./sanity/schemas/objects";
 
 export default createConfig(
   {
@@ -26,7 +26,7 @@ export default createConfig(
     },
   },
   {
-    inlineResolver: false,
+    inlineResolver: true,
     outPath: path.resolve(__dirname, "./sanity-generator"),
   }
 );

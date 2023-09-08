@@ -1,4 +1,4 @@
-import { Resolver } from "./../../../src/types";
+import { Resolver } from "./../../../../src/types/";
 
 export const localeStringSchema = {
   type: "object",
