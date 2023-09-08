@@ -78,10 +78,7 @@ export const getPages = /* groq */  `
       ...,
       slides[] {
         ...,
-        slide {
-          ...,
-          "title": coalesce(title[$lang], title.en)
-        }
+        "title": coalesce(title[$lang], title.en)
       }
     }
   }
