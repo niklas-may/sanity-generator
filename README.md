@@ -74,12 +74,9 @@ export const getPages = /* groq */  `
   "seoTitle": coalesce(seoTitle[$lang], seoTitle.en),
   sections[] {
     ...,
-    gallerySection {
+    slides[] {
       ...,
-      slides[] {
-        ...,
-        "title": coalesce(title[$lang], title.en)
-      }
+      "title": coalesce(title[$lang], title.en)
     }
   }
 }
