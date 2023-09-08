@@ -65,7 +65,7 @@ export const mediaSchema = {
 };
 
 export const mediaResolver: Resolver = (name: string) => /* groq */ `
-    "${name}": {
+    ${name} {
       _type,
       type == 'image' => {
         'image': image.asset->{

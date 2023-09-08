@@ -1,7 +1,14 @@
+import { wrap } from "module";
 import type { Resolver, DocumentOrField } from "../types";
 import { consola } from "consola";
+import { isConstructorTypeNode } from "typescript";
 
-type TraversalArguments = { fields: Array<DocumentOrField>; foundTypes?: Set<string>; inline: boolean };
+type TraversalArguments = {
+  fields: Array<DocumentOrField>;
+  foundTypes?: Set<string>;
+  inline: boolean;
+  objectMode?: "wraped" | "naked";
+};
 
 export class Projector {
   resolvers: Record<string, Resolver>;
@@ -41,7 +48,7 @@ export class Projector {
     }, prevAcc ?? []);
   }
 
-  #projectNodeAndSpread({ fields, foundTypes, inline }: TraversalArguments): [string, Set<string>] {
+  #projectNodeAndSpread({ fields, foundTypes, inline, objectMode }: TraversalArguments): [string, Set<string>] {
     const types = foundTypes ?? new Set();
 
     return [
@@ -60,20 +67,38 @@ export class Projector {
                 return acc.concat(
                   curr.name,
                   `[]{\n ${
-                    this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0]
+                    this.#projectNodeAndSpread({
+                      fields: subFields,
+                      foundTypes: childCustomTypes,
+                      inline,
+                      objectMode: curr.of.length > 1 ? "wraped" : "naked",
+                    })[0]
                   } \n}, `
                 );
               } else {
-                return acc.concat(
-                  curr.name,
-                  `{\n ${
-                    this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0]
-                  } \n}, `
-                );
+                if (objectMode === "wraped") {
+                  return acc.concat(
+                    `_type == '${curr.name}' =>  {\n ${
+                      this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0]
+                    } \n}, `
+                  );
+                } else if (objectMode === "naked") {
+                  return acc.concat(
+                    ` ${this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0]} `
+                  );
+                } else {
+                  return acc.concat(
+                    curr.name,
+                    `{\n ${
+                      this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0]
+                    } \n}, `
+                  );
+                }
+
+                console.log("objectMode ", objectMode);
               }
-            } else {
-              return acc;
             }
+       
           } else if (this.#isCustomType(curr.type)) {
             const field = inline
               ? `${this.resolvers[curr.type](curr.name)}`
@@ -82,7 +107,7 @@ export class Projector {
           } else {
             return acc;
           }
-        }, "...,\n"),
+        }, objectMode ? "\n" : "...,\n"),
       types,
     ];
   }
