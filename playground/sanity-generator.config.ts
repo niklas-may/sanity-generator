@@ -18,11 +18,6 @@ export default createConfig(
           ${schemas.page.projection}
         }
       `,
-      getPageBySlug: ({ schemas }) => /* groq */ `
-        *[_type == "${schemas.page.name}" && slug == $slug] {
-          ${schemas.page.projection}
-        }[0]
-      `,
     },
   },
   {
