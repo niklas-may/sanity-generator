@@ -51,6 +51,10 @@ export default createConfig({
 });
 ```
 
+Write the queries and resolver to disk:
+
+`$ npx sanity-generator generate`
+
 ## How it works
 
 Sanity Generator simply traverses all branches of the document schema. If a branch holds no types that have a corresponding resolver, it uses the spread operator (`...`). If a branch holds a type that should be resolved differently, it writes the corresponding projections just as far as needed.
