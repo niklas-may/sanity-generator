@@ -24,7 +24,7 @@ program
   .option("-c, --config <filename>", "Path to the configuration file")
   .action(({ config }) => {
     try {
-      console.log(config)
+      console.log(config);
       const filePath = [config, "sanity-generator.config.ts", "sanity-generator.config.js"]
         .filter(Boolean)
         .filter((f) => fs.existsSync(path.resolve(process.cwd(), f)))
@@ -32,12 +32,12 @@ program
 
       if (!filePath)
         throw new Error(
-          "Sanity Generator config missing. Use --config <filename>  run init to generate a config file."
+          "Config file not found. Run the init command to generate a config file or use the --config <path-to-config-file> to specify the location."
         );
       const configObject = require(path.resolve(process.cwd(), filePath)).default as CreateConfigReturn<object>;
       generate(...configObject);
     } catch (e) {
-      consola.error(e);
+      consola.error(e.message);
     }
   });
 

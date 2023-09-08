@@ -34,9 +34,6 @@ function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, 
 
   names.forEach((t) => (resolverCode += `export const ${t} = ${serializeJs(resolvers[t])}; \n \n`));
   writeTypeScript(path.resolve(dir, "index.ts"), resolverCode);
-
-  consola.info(`${names.size} resolver writtern to disk`);
-
 }
 
 export async function generate<T extends Record<string, any>>(config: Config<T>, options?: Options) {
@@ -47,13 +44,14 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
 
   const { schemas } = processSchema(config, { inlineResolver: true });
 
-  consola.info("Validating Queries");
+  consola.info("Looking for GROQ syntax errors...");
 
   for (const [_, queryFn] of Object.entries(config.queries)) {
     const queryString = queryFn({ schemas: schemas });
-
     await prettifyGroq(queryString);
   }
+
+  consola.info("No errors found.");
 
   if (opts?.inlineResolver === true) {
     for (const [queryName, queryFn] of Object.entries(config.queries)) {
@@ -65,7 +63,6 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
       const filePath = path.resolve(opts.outPath, "queries", `${queryName}.ts`);
       writeTypeScript(filePath, code);
     }
-    consola.info(`${Object.entries(config.queries).length} queries writtern to disk`);
   }
 
   if (opts?.inlineResolver === false) {
@@ -88,8 +85,14 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
       const filePath = path.resolve(opts.outPath, "queries", `${queryName}.ts`);
       writeTypeScript(filePath, code);
     }
-
-    consola.info(`${Object.entries(config.queries).length} queries writtern to disk`);
-
   }
+
+  if (opts.inlineResolver) {
+    consola.info(`${Object.entries(config.queries).length} queries written.`);
+  } else {
+    consola.info(
+      `${Object.entries(config.queries).length} queries and ${Object.entries(config.resolvers).length} resolvers written.`
+    );
+  }
+  consola.info(`✅ All done. See output at ${opts.outPath}`);
 }

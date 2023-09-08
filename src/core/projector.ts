@@ -107,19 +107,21 @@ export class Projector {
 
   projectDocument(document: { name: string; fields: Field[] }) {
     try {
-      if (!Array.isArray(document?.fields)) throw new Error("Fields Proerty is required");
+      if (!Array.isArray(document?.fields)) throw new Error(`Missing "fields" property on schema ${document.name}`);
       return this.#projectNode(document.fields);
     } catch (e) {
-      consola.error(e);
+      consola.error(e.message);
+      process.exit(1);
     }
   }
 
   projectAndSpreadDocument(document: { name: string; fields: Field[] }, options: { inline: boolean }) {
     try {
-      if (!Array.isArray(document?.fields)) throw new Error("Fields Proerty is required");
+      if (!Array.isArray(document?.fields)) throw new Error(`Missing "fields" property on schema ${document.name}`);
       return this.#projectNodeAndSpread({ fields: document.fields, inline: options.inline });
     } catch (e) {
-      consola.error(e);
+      consola.error(e.message);
+      process.exit(1);
     }
   }
 
