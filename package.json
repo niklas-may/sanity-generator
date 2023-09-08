@@ -1,6 +1,6 @@
 {
   "name": "sanity-generator",
-  "version": "0.0.2-3",
+  "version": "0.0.2-4",
   "main": "./build/index.js",
   "typings": "./build/types/index.d.ts",
   "bin": {
