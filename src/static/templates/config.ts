@@ -5,6 +5,9 @@ export default createConfig({
   resolvers: {},
   queries: {
     myQuery: ({ schemas }) => /* groq */ `
+        *[] {
+          
+        }
       `,
   },
 });

@@ -3,6 +3,7 @@ export type Field = {
   type: string;
   of?: Field[];
   fields?: Field[];
+  [key: string]: any;
 };
 
 export type ProcessedSchema = {
@@ -10,11 +11,11 @@ export type ProcessedSchema = {
   projection: string;
 };
 
-type CreateProjections = object;
+type SanitySchemas = Record<string, Field>;
 
 export type Resolver = (fieldName: string) => string;
 
-export type Config<T extends CreateProjections> = {
+export type Config<T extends SanitySchemas> = {
   schemas: T;
   queries: QueriesConfig<T>;
   resolvers?: Record<string, Resolver>;
@@ -29,6 +30,5 @@ export type CreateConfigReturn<T extends Record<string, any>> = [Config<T>, Opti
 
 export type Options = {
   outPath?: string;
-  inlineResolver?: boolean
+  inlineResolver?: boolean;
 };
-
