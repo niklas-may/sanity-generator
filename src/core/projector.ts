@@ -94,9 +94,9 @@ export class Projector {
                     } \n}, `
                   );
                 }
-
-                console.log("objectMode ", objectMode);
               }
+            } else {
+              return acc
             }
        
           } else if (this.#isCustomType(curr.type)) {
