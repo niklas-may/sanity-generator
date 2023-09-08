@@ -43,7 +43,7 @@ program
 
 program.command("init").action(() => {
   const templatePath = path.resolve(__dirname, "../static/templates/config.ts");
-  const outPath = path.resolve(process.cwd(), "sanity-generator.config.js");
+  const outPath = path.resolve(process.cwd(), "sanity-generator.config.ts");
 
   fs.copyFileSync(templatePath, outPath);
 });

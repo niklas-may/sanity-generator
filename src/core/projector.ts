@@ -1,4 +1,4 @@
-import type { Resolver, Field } from "../types";
+import type { Resolver, DocumentOrField } from "../types";
 import { consola } from "consola";
 
 type TraversalArguments = { fields: Array<Field>; foundTypes?: Set<string>; inline: boolean };
@@ -26,12 +26,12 @@ export class Projector {
 
     return matches.size > 0 ? matches : false;
   }
-  #getSubfields(field: Field): boolean | Field[] {
+  #getSubfields(field: DocumentOrField): boolean | DocumentOrField[] {
     return field.of || field.fields || false;
   }
 
-  #reduceTypes(field: Field, prevAcc?: string[]): string[] {
-    return (field.of || field.fields || []).reduce((acc: string[], curr: Field) => {
+  #reduceTypes(field: DocumentOrField, prevAcc?: string[]): string[] {
+    return (field.of || field.fields || []).reduce((acc: string[], curr: DocumentOrField) => {
       acc.push(curr.type);
 
       if (this.#getSubfields(curr)) {
@@ -105,7 +105,7 @@ export class Projector {
       }, "");
   }
 
-  projectDocument(document: { name: string; fields: Field[] }) {
+  projectDocument(document: { name: string; fields: DocumentOrField[] }) {
     try {
       if (!Array.isArray(document?.fields)) throw new Error(`Missing "fields" property on schema ${document.name}`);
       return this.#projectNode(document.fields);
@@ -115,7 +115,7 @@ export class Projector {
     }
   }
 
-  projectAndSpreadDocument(document: { name: string; fields: Field[] }, options: { inline: boolean }) {
+  projectAndSpreadDocument(document: { name: string; fields: DocumentOrField[] }, options: { inline: boolean }) {
     try {
       if (!Array.isArray(document?.fields)) throw new Error(`Missing "fields" property on schema ${document.name}`);
       return this.#projectNodeAndSpread({ fields: document.fields, inline: options.inline });

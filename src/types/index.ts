@@ -1,8 +1,8 @@
-export type Field = {
+export type DocumentOrField = {
   name: string;
   type: string;
-  of?: Field[];
-  fields?: Field[];
+  of?: DocumentOrField[];
+  fields?: DocumentOrField[];
   [key: string]: any;
 };
 
@@ -11,7 +11,7 @@ export type ProcessedSchema = {
   projection: string;
 };
 
-type SanitySchemas = Record<string, Field>;
+type SanitySchemas = Record<string, DocumentOrField>;
 
 export type Resolver = (fieldName: string) => string;
 
