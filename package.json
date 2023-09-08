@@ -4,7 +4,7 @@
   "main": "./build/index.js",
   "typings": "./build/types/index.d.ts",
   "files": [
-    "build/"
+    "build"
   ],
   "bin": {
     "sanity-generator": "build/cli/main.js",
