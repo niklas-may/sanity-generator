@@ -2,9 +2,9 @@
 
 Sanity Generator aims to simplify the process of defining schemas and queries when working with [Sanity](https://www.sanity.io/) CMS.
 
-It is based on the assumption that a given document schema shape, is not that different from it's corresponding query shape. Moreover it assumes that if you need to reshape a specific field type, you probably would like to do this on all occurences of that type through out all queries.
+It is based on the assumption that a given document schema shape, is not that different from its corresponding query shape. Moreover, it assumes that if you need to reshape a specific field type, you probably would like to do this on all occurrences of that type throughout all queries.
 
-Certainly, this can be done with simple exporting, importing and composing of template literals. But this is quite repetitivie, and error prone. Sanity Generator is a CLI tool that aims to automate this while still providing all flexiblities of GROQ.
+Certainly, this can be done with simple exporting, importing, and composing of template literals. But this is quite repetitive and error-prone. Sanity Generator is a CLI tool that aims to automate this while still providing all the flexiblities of GROQ.
 
 **Disclaimer: This is still Beta. Use with caution**
 
@@ -38,7 +38,10 @@ export default createConfig({
     `,
   },
   queries: {
-    // Every property in here will be exported as a GROQ query. The function recieves a single argument that is an object with all processed schemas. Here you can get the projection with all resolvers applied, and for convinece also the schema name.
+    // Every property in here will be exported as a GROQ query. 
+    // The function receives a single argument that is an object with 
+    // all processed schemas. Here you can get the projection with 
+    // all resolvers applied, and for convenience also the schema name.
     getPages: ({ schemas }) => /* groq */ `
         *[_type == "${schemas.page.name}"] {
           ${schemas.page.projection}
@@ -50,9 +53,9 @@ export default createConfig({
 
 ## How it works
 
-Sanity Generator simple traverses all branches of the document schema. If a branch holds no types that have a corresponding resolver, it uses the spread operator (`...`). If a branch holds a type that should be resolved differently, it writes the corresponding projections just as far as needed.
+Sanity Generator simply traverses all branches of the document schema. If a branch holds no types that have a corresponding resolver, it uses the spread operator (`...`). If a branch holds a type that should be resolved differently, it writes the corresponding projections just as far as needed.
 
-Here is an example with the same query, without and with custom resolver. (Both with option `inlineResolver: true`) 
+Here is an example with the same query, without and with a custom resolver. (Both with option `inlineResolver: true`) 
 
 ```TypeScript
 // Generated query with no resolver
@@ -104,7 +107,7 @@ or
 
 ### Config
 
-The module exports a `createConfig` function to provide better typesupport for the configuration object.
+The module exports a `createConfig` function to provide better type support for the configuration object.
 
 | Property        | Default              | Description                                                                                                                                        |
 | --------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
