@@ -87,7 +87,6 @@ export const pageSchema = {
                     {
                       name: "media",
                       type: "media",
-                      group: "seo",
                     },
                     {
                       name: "caption",
