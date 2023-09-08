@@ -24,7 +24,6 @@ program
   .option("-c, --config <filename>", "Path to the configuration file")
   .action(({ config }) => {
     try {
-      console.log(config);
       const filePath = [config, "sanity-generator.config.ts", "sanity-generator.config.js"]
         .filter(Boolean)
         .filter((f) => fs.existsSync(path.resolve(process.cwd(), f)))
