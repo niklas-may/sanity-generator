@@ -18,7 +18,7 @@ npm install sanity-generator --save-dev
 or
 
 ```sh
-$ yarn add sanity-generator --dev
+yarn add sanity-generator --dev
 ```
 
 Create a config file:
