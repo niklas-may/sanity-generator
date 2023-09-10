@@ -2,7 +2,7 @@
 
 Sanity Generator aims to simplify the process of defining schemas and queries when working with [Sanity](https://www.sanity.io/) CMS.
 
-It is based on the assumption that a given document schema shape, is not that different from its corresponding query shape. Moreover, it assumes that if you need to reshape a specific field type, you probably would like to do this on all occurrences of that type throughout all queries.
+It is built on the premise, that for most use cases, the shape of your query can be very similar to the shape of your document schema. Moreover, it assumes that if you need to reshape a specific field type, you probably would like to do this on all occurrences of that type throughout all queries.
 
 Certainly, this can be done with simple exporting, importing, and composing of template literals. But this is quite repetitive and error-prone. Sanity Generator is a CLI tool that aims to automate this while still providing all the flexiblities of GROQ.
 
