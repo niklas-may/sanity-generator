@@ -1621,7 +1621,7 @@
     golden-fleece "^1.0.9"
     pkg-dir "^5.0.0"
 
-"@sanity/client@^6.4.9":
+"@sanity/client@^6.4.11", "@sanity/client@^6.4.9":
   version "6.4.11"
   resolved "https://registry.yarnpkg.com/@sanity/client/-/client-6.4.11.tgz#a3c6bf17eabf7356216ff98095fcf8baff082c25"
   integrity sha512-A8s5odg9b8ioamKDdfrfsp5rHsE8J+BOpknw6eRtIHF5BBkNGAYdS78NdS1m3R+llHotdpyS/X2+la4YgzU5/w==
