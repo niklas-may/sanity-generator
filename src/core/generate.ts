@@ -1,9 +1,9 @@
 import type { ProcessedSchema, Config, Options, Resolver } from "./../types";
 import path from "path";
 import { consola } from "consola";
-
 import { rimrafSync } from "rimraf";
 import serializeJs from "serialize-javascript";
+import { paramCase } from "change-case";
 import { Projector } from "./projector";
 import { mergeOptions, createMissingDirectories, writeTypeScript, prettifyGroq } from "./lib";
 
@@ -60,13 +60,15 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
       const query = await prettifyGroq(queryString);
 
       const code = `export const ${queryName} = /* groq */\`\n${query}\``;
-      const filePath = path.resolve(opts.outPath, "queries", `${queryName}.ts`);
+      const filePath = path.resolve(opts.outPath, "queries", `${paramCase(queryName)}.ts`);
       writeTypeScript(filePath, code);
     }
   }
-
+  let usedResolvers = 0;
   if (opts?.inlineResolver === false) {
     const { schemas, types } = processSchema(config, { inlineResolver: false });
+    usedResolvers = types.size;
+
     createMissingDirectories(path.join(opts.outPath, "resolver"));
 
     wirteResolver(types, config.resolvers, path.join(opts.outPath, "resolver"));
@@ -82,17 +84,15 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
         .filter(Boolean)
         .join("\n");
 
-      const filePath = path.resolve(opts.outPath, "queries", `${queryName}.ts`);
+      const filePath = path.resolve(opts.outPath, "queries", `${paramCase(queryName)}.ts`);
       writeTypeScript(filePath, code);
     }
   }
 
   if (opts.inlineResolver) {
-    consola.info(`${Object.entries(config.queries).length} queries written.`);
+    consola.info(`${Object.entries(config.queries).length} querie(s) written.`);
   } else {
-    consola.info(
-      `${Object.entries(config.queries).length} queries and ${Object.entries(config.resolvers).length} resolvers written.`
-    );
+    consola.info(`${Object.entries(config.queries).length} querie(s) and ${usedResolvers} resolver(s) written.`);
   }
   consola.info(`✅ All done. See output at ${opts.outPath}`);
 }

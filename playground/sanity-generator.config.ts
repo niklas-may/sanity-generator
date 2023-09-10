@@ -21,7 +21,7 @@ export default createConfig(
     },
   },
   {
-    // inlineResolver: true,
+    inlineResolver: true,
     outPath: path.resolve(__dirname, "./sanity-generator"),
   }
 );
