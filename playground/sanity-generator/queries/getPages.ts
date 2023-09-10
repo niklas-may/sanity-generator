@@ -1,20 +1,30 @@
+import { localeString } from "../resolver";
+
 export const getPages = /* groq */ `
 *[_type == "page"] {
   ...,
-  "seoTitle": coalesce(seoTitle[$lang], seoTitle.en),
+  ${localeString("seoTitle")},
+  gallery {
+    ...,
+    ${localeString("sectionTitle")},
+    slides[] {
+      ...,
+      ${localeString("title")}
+    }
+  },
   sections[] {
     _type == "gallerySection" => {
       ...,
-      "sectionTitle": coalesce(sectionTitle[$lang], sectionTitle.en),
+      ${localeString("sectionTitle")},
       slides[] {
         ...,
-        "title": coalesce(title[$lang], title.en)
+        ${localeString("title")}
       }
     },
     _type == "textSection" => {
       ...,
-      "title": coalesce(title[$lang], title.en)
+      ${localeString("title")}
     }
   }
-}
+}[0]
 `;
