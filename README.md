@@ -12,17 +12,24 @@ Certainly, this can be done with simple exporting, importing, and composing of t
 
 Install from npm:
 
-`$ npm install sanity-generator --save-dev`
+```sh 
+npm install sanity-generator --save-dev
+```
+or
 
-`$ yarn add sanity-generator --dev`
+```sh
+$ yarn add sanity-generator --dev
+```
 
 Create a config file:
 
-`$ npx sanity-generator init`
+```sh
+npx sanity-generator init
+```
 
 Customize the config:
 
-```TypeScript
+```js
 // sanity-generator.config.ts
 export default createConfig({
   schemas: {
@@ -53,7 +60,9 @@ export default createConfig({
 
 Write the queries and resolver to disk:
 
-`$ npx sanity-generator generate`
+```sh 
+npx sanity-generator generate
+```
 
 ## How it works
 
@@ -61,7 +70,7 @@ Sanity Generator simply traverses all branches of the document schema. If a bran
 
 Here is an example with the same query, without and with a custom resolver. (Both with option `inlineResolver: true`) 
 
-```TypeScript
+```js
 // Generated query with no resolver
 export const getPages = /* groq */ `
 *[_type == "page"] {
@@ -70,7 +79,7 @@ export const getPages = /* groq */ `
 `
 ```
 
-```TypeScript
+```js
 // Same query, with resolver
 export const getPages = /* groq */  `
 *[_type == "page"] {
@@ -91,11 +100,15 @@ export const getPages = /* groq */  `
 
 ### CLI
 
-`$ npx sanity-generator`
+```sh
+npx sanity-generator
+```
 
 or
 
-`$ npx sg`
+```sh
+npx sg
+```
 
 | Command    | Option             | Description                                                                        |
 | ---------- | ------------------ | ---------------------------------------------------------------------------------- |
