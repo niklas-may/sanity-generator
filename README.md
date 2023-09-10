@@ -13,12 +13,12 @@ Certainly, this can be done with simple exporting, importing, and composing of t
 Install from npm:
 
 ```sh 
-npm install sanity-generator --save-dev
+npm install --save-dev sanity-generator 
 ```
 or
 
 ```sh
-yarn add sanity-generator --dev
+yarn add --dev sanity-generator 
 ```
 
 Create a config file:
