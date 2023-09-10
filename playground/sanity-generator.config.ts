@@ -16,7 +16,7 @@ export default createConfig(
       getPages: ({ schemas }) => /* groq */ `
         *[_type == "${schemas.page.name}"] {
           ${schemas.page.projection}
-        }
+        }[0]
       `,
     },
   },
