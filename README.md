@@ -2,7 +2,7 @@
 
 Sanity Generator aims to simplify the process of defining schemas and queries when working with [Sanity](https://www.sanity.io/) CMS.
 
-It is based on the assumption that a given document schema shape, is not that different from its corresponding query shape. Moreover, it assumes that if you need to reshape a specific field type, you probably would like to do this on all occurrences of that type throughout all queries.
+It is built on the premise, that for most use cases, the shape of your query can be very similar to the shape of your document schema. Moreover, it assumes that if you need to reshape a specific field type, you probably would like to do this on all occurrences of that type throughout all queries.
 
 Certainly, this can be done with simple exporting, importing, and composing of template literals. But this is quite repetitive and error-prone. Sanity Generator is a CLI tool that aims to automate this while still providing all the flexiblities of GROQ.
 
@@ -12,17 +12,24 @@ Certainly, this can be done with simple exporting, importing, and composing of t
 
 Install from npm:
 
-`$ npm install sanity-generator --save-dev`
+```sh 
+npm install sanity-generator --save-dev
+```
+or
 
-`$ yarn add sanity-generator --dev`
+```sh
+yarn add sanity-generator --dev
+```
 
 Create a config file:
 
-`$ npx sanity-generator init`
+```sh
+npx sanity-generator init
+```
 
 Customize the config:
 
-```TypeScript
+```js
 // sanity-generator.config.ts
 export default createConfig({
   schemas: {
@@ -51,13 +58,19 @@ export default createConfig({
 });
 ```
 
+Write the queries and resolver to disk:
+
+```sh 
+npx sanity-generator generate
+```
+
 ## How it works
 
 Sanity Generator simply traverses all branches of the document schema. If a branch holds no types that have a corresponding resolver, it uses the spread operator (`...`). If a branch holds a type that should be resolved differently, it writes the corresponding projections just as far as needed.
 
 Here is an example with the same query, without and with a custom resolver. (Both with option `inlineResolver: true`) 
 
-```TypeScript
+```js
 // Generated query with no resolver
 export const getPages = /* groq */ `
 *[_type == "page"] {
@@ -66,7 +79,7 @@ export const getPages = /* groq */ `
 `
 ```
 
-```TypeScript
+```js
 // Same query, with resolver
 export const getPages = /* groq */  `
 *[_type == "page"] {
@@ -74,15 +87,9 @@ export const getPages = /* groq */  `
   "seoTitle": coalesce(seoTitle[$lang], seoTitle.en),
   sections[] {
     ...,
-    gallerySection {
+    slides[] {
       ...,
-      slides[] {
-        ...,
-        slide {
-          ...,
-          "title": coalesce(title[$lang], title.en)
-        }
-      }
+      "title": coalesce(title[$lang], title.en)
     }
   }
 }
@@ -93,11 +100,15 @@ export const getPages = /* groq */  `
 
 ### CLI
 
-`$ npx sanity-generator`
+```sh
+npx sanity-generator
+```
 
 or
 
-`$ npx sg`
+```sh
+npx sg
+```
 
 | Command    | Option             | Description                                                                        |
 | ---------- | ------------------ | ---------------------------------------------------------------------------------- |
