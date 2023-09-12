@@ -64,6 +64,25 @@ Write the queries and resolver to disk:
 npx sanity-generator generate
 ```
 
+## Filehandling and Limitations
+
+Sanity Generator uses [ts-node](https://github.com/TypeStrong/ts-node) and if present the tsconfig.json from the present working directory to transpile all TypeScript dependencies of your config. However, this might not be enough if your schemas depend on files that need a special loader like css files. For these scenarios you might need to transpile the schemas before using them with the generator.
+
+## Programatic Use
+
+For szenarios as described before or more custom implementation, you can import the core functins to your node.js app.
+
+```js
+import { createConfig, generate } from "sanity-generator";
+
+const config = createConfig({
+  // ...config
+})
+
+generate(...config)
+
+```
+ 
 ## How it works
 
 Sanity Generator simply traverses all branches of the document schema. If a branch holds no types that have a corresponding resolver, it uses the spread operator (`...`). If a branch holds a type that should be resolved differently, it writes the corresponding projections just as far as needed.
@@ -127,3 +146,10 @@ The module exports a `createConfig` function to provide better type support for 
 | queries         | {}                   | See basic usage                                                                                                                                    |
 | outPath         | './sanity-generator` | Path to the destination folder for the queries                                                                                                     |
 | inlineResolvers | false                | By default, resolvers are imported as a function into the final query. Setting this to false, will inline the resolvers as a string into the query. |
+
+## ToDos
+[] Example for programatic use in monorepo (PRs welcome)
+
+## Roadmat
+[] Auto type generation for the queries.
+[] Local resolvers for inline objects (Objects that are note importet directyl to the schema)
