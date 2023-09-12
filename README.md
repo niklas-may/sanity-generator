@@ -148,8 +148,8 @@ The module exports a `createConfig` function to provide better type support for 
 | inlineResolvers | false                | By default, resolvers are imported as a function into the final query. Setting this to false, will inline the resolvers as a string into the query. |
 
 ## ToDos
-[] Example for programatic use in monorepo (PRs welcome)
+* Example for programatic use in monorepo (PRs welcome)
 
-## Roadmat
-[] Auto type generation for the queries.
-[] Local resolvers for inline objects (Objects that are note importet directyl to the schema)
+## Roadmap
+* Auto type generation for the queries.
+* Local resolvers for inline objects (objects that are not imported directly to the schema)
