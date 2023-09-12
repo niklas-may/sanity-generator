@@ -66,11 +66,12 @@ npx sanity-generator generate
 
 ## Filehandling and Limitations
 
-Sanity Generator uses [ts-node](https://github.com/TypeStrong/ts-node) and if present the tsconfig.json from the present working directory to transpile all TypeScript dependencies of your config. However, this might not be enough if your schemas depend on files that need a special loader like css files. For these scenarios you might need to transpile the schemas before using them with the generator.
+Sanity Generator uses [ts-node](https://github.com/TypeStrong/ts-node) and if present the tsconfig.json from the present working directory to transpile all of you configs TypeScript dependencies. However, this might not be enough if your schemas depend on files that need a special loader like CSS files. For these scenarios you might need to transpile the schemas before using them with the generator.
+
 
 ## Programatic Use
 
-For szenarios as described before or more custom implementation, you can import the core functins to your node.js app.
+For szenarios as described before or more custom implementation, you can import the core functions into your node.js app.
 
 ```js
 import { createConfig, generate } from "sanity-generator";
