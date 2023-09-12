@@ -36,7 +36,7 @@ program
       const configObject = require(path.resolve(process.cwd(), filePath)).default as CreateConfigReturn<object>;
       generate(...configObject);
     } catch (e) {
-      consola.error(e.message);
+      consola.error(e);
     }
   });
 

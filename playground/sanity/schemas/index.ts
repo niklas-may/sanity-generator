@@ -1,6 +1,6 @@
 import {localeStringSchema, mediaSchema} from './objects'
 import {pageSchema} from './documents'
-import {getPages} from '../../sanity-generator/queries/getPages'
+import {getPages} from '../../sanity-generator/queries/get-pages'
 import {createClient} from '@sanity/client'
 
 const objects = [localeStringSchema, mediaSchema]
