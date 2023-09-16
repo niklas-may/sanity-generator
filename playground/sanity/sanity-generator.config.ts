@@ -1,11 +1,14 @@
-import path from 'path';
+import { createConfig } from "../../src";
 import { fileURLToPath } from 'url';
-import { createConfig } from "../src";
-import { pageSchema } from "./sanity/schemas/documents";
-import { localStringResolver, mediaResolver } from "./sanity/schemas/objects";
+import { pageSchema } from "./schemas/documents";
+import { localStringResolver, mediaResolver } from "./schemas/objects";
+
+
+import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 
 export default createConfig(
   {
@@ -25,7 +28,7 @@ export default createConfig(
     },
   },
   {
-    // inlineResolver: true,
+    inlineResolver: true,
     outPath: path.resolve(__dirname, "./sanity-generator"),
   }
 );

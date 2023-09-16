@@ -1,28 +1,19 @@
 #! /usr/bin/env node
-import { CreateConfigReturn } from "../types";
 
 import path from "path";
 import fs from "fs";
-import { register } from "ts-node";
 import { consola } from "consola";
 import { program } from "commander";
 import { generate } from "../core/generate";
-
-register({
-  compilerOptions: {
-    module: "CommonJS",
-  },
-  require: ["tsconfig-paths/register"],
-  typeCheck: false,
-  transpileOnly: true,
-});
+import { serveConfig } from "../core/serve-config";
 
 program.name("Sanity Generator");
 
 program
   .command("generate")
   .option("-c, --config <filename>", "Path to the configuration file")
-  .action(({ config }) => {
+  .option("-w, --watch", "Watch for file changes and rerun")
+  .action(async ({ config, watch }) => {
     try {
       const filePath = [config, "sanity-generator.config.ts", "sanity-generator.config.js"]
         .filter(Boolean)
@@ -33,8 +24,8 @@ program
         throw new Error(
           "Config file not found. Run the init command to generate a config file or use the --config <path-to-config-file> to specify the location."
         );
-      const configObject = require(path.resolve(process.cwd(), filePath)).default as CreateConfigReturn<object>;
-      generate(...configObject);
+
+      serveConfig({ configPath: filePath, watch: !!watch }, async (config) => await generate(...config));
     } catch (e) {
       consola.error(e);
     }
@@ -46,4 +37,5 @@ program.command("init").action(() => {
 
   fs.copyFileSync(templatePath, outPath);
 });
+
 program.parse(process.argv);

@@ -3,7 +3,7 @@ import {deskTool} from 'sanity/desk'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemas'
 
-
+import config from "./sanity-generator.config"
 
 export default defineConfig({
   name: 'default',
@@ -18,7 +18,6 @@ export default defineConfig({
     types: schemaTypes,
   },
 })
-
 
 
 

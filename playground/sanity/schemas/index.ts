@@ -3,8 +3,8 @@ import {pageSchema} from './documents'
 import {getPages} from '../../sanity-generator/queries/get-pages'
 import {createClient} from '@sanity/client'
 
-const objects = [localeStringSchema, mediaSchema]
 const documents = [pageSchema]
+const objects = [localeStringSchema, mediaSchema]
 
 export const schemaTypes = [...objects, ...documents]
 

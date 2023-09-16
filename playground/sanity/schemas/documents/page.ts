@@ -1,17 +1,18 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
-export const pageSchema = defineType({
+type Page = any
+export const pageSchema: Page = defineType({
   name: 'page',
   type: 'document',
   groups: [
     {
-      name: 'content',
       title: 'Content',
+      name: 'content',
       default: true,
     },
     {
-      name: 'seo',
       title: 'SEO',
+      name: 'seo',
     },
   ],
   fields: [
@@ -19,7 +20,7 @@ export const pageSchema = defineType({
       type: 'localeString',
       title: 'Title (Open Graph)',
       group: 'seo',
-      name: 'seoTitle',
+      name: 'seoSuperTitle',
       description: 'Used for Open Graph previews implemented  by facebook, twitter, google etc.',
     }),
     defineField({
