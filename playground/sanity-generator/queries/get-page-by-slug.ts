@@ -1,7 +1,7 @@
 import { inlineResolver0, localeString } from "../resolver";
 
-export const getPages = /* groq */ `
-*[_type == "page"] {
+export const getPageBySlug = /* groq */ `
+*[_type == "page" && slug.current == $slug] {
   ...,
   gallery {
     ...,

@@ -3,6 +3,9 @@ export type DocumentOrField = {
   type: string;
   of?: DocumentOrField[];
   fields?: DocumentOrField[];
+  generator?: {
+    resolver: Resolver;
+  };
   [key: string]: any;
 };
 
@@ -32,3 +35,9 @@ export type Options = {
   outPath?: string;
   inlineResolver?: boolean;
 };
+
+export interface GeneratorSchemaDefinition {
+  generator?: {
+    resolver?: Resolver;
+  };
+}

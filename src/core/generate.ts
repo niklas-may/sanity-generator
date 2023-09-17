@@ -7,34 +7,6 @@ import { paramCase } from "change-case";
 import { Projector } from "./projector";
 import { mergeOptions, createMissingDirectories, writeTypeScript, prettifyGroq } from "./lib";
 
-function processSchema<T extends Record<string, any>>(config: Config<T>, options?: Options) {
-  const projector = new Projector(config.resolvers);
-
-  const schemas = {} as Record<keyof T, ProcessedSchema>;
-  const types = new Set<string>();
-
-  for (const key in config.schemas) {
-    const k = key as keyof typeof config.schemas;
-    const doc = config.schemas[k];
-
-    const [projection, foundTypes] = projector.projectAndSpreadDocument(doc, { inline: options?.inlineResolver });
-    foundTypes.forEach((t) => types.add(t));
-
-    schemas[key] = {
-      name: doc.name,
-      projection,
-    };
-  }
-
-  return { schemas, types };
-}
-
-function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, dir: string) {
-  let resolverCode = "";
-
-  names.forEach((t) => (resolverCode += `export const ${t} = ${serializeJs(resolvers[t])}; \n \n`));
-  writeTypeScript(path.resolve(dir, "index.ts"), resolverCode);
-}
 
 export async function generate<T extends Record<string, any>>(config: Config<T>, options?: Options) {
   const opts = mergeOptions(options);
@@ -61,17 +33,18 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
 
       const code = `export const ${queryName} = /* groq */\`\n${query}\``;
       const filePath = path.resolve(opts.outPath, "queries", `${paramCase(queryName)}.ts`);
-      writeTypeScript(filePath, code);
+
+     await writeTypeScript(filePath, code);
     }
   }
   let usedResolvers = 0;
   if (opts?.inlineResolver === false) {
-    const { schemas, types } = processSchema(config, { inlineResolver: false });
+    const { schemas, types, resolvers } = processSchema(config, { inlineResolver: false });
     usedResolvers = types.size;
-
     createMissingDirectories(path.join(opts.outPath, "resolver"));
 
-    wirteResolver(types, config.resolvers, path.join(opts.outPath, "resolver"));
+
+    wirteResolver(types, resolvers, path.join(opts.outPath, "resolver"));
 
     for (const [queryName, queryFn] of Object.entries(config.queries)) {
       const queryTemplate = await prettifyGroq(queryFn({ schemas: schemas }));
@@ -85,7 +58,7 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
         .join("\n");
 
       const filePath = path.resolve(opts.outPath, "queries", `${paramCase(queryName)}.ts`);
-      writeTypeScript(filePath, code);
+      await writeTypeScript(filePath, code);
     }
   }
 
@@ -96,3 +69,33 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
   }
   consola.info(`✅ All done. See output at ${opts.outPath}`);
 }
+
+function processSchema<T extends Record<string, any>>(config: Config<T>, options?: Options) {
+  const projector = new Projector(config.resolvers);
+
+  const schemas = {} as Record<keyof T, ProcessedSchema>;
+  const types = new Set<string>();
+
+  for (const key in config.schemas) {
+    const k = key as keyof typeof config.schemas;
+    const doc = config.schemas[k];
+
+    const [projection, foundTypes] = projector.projectAndSpreadDocument(doc, { inline: options?.inlineResolver });
+    foundTypes.forEach((t) => types.add(t));
+
+    schemas[key] = {
+      name: doc.name,
+      projection,
+    };
+  }
+
+  return { schemas, types, resolvers: projector.resolvers };
+}
+
+function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, dir: string) {
+  let resolverCode = "";
+
+  names.forEach((t) => (resolverCode += `export const ${t} = ${serializeJs(resolvers[t])}; \n \n`));
+  writeTypeScript(path.resolve(dir, "index.ts"), resolverCode);
+}
+

@@ -1,4 +1,4 @@
-import { inlineResolver0, localeString } from "../resolver";
+import { localeString } from "../resolver";
 
 export const getPages = /* groq */ `
 *[_type == "page"] {
@@ -7,7 +7,7 @@ export const getPages = /* groq */ `
     ...,
     slides[] {
       ...,
-      ${inlineResolver0("SUUPER")}
+      ${localeString("title")}
     }
   },
   sections[] {
