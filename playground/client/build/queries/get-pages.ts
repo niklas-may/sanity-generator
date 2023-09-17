@@ -1,9 +1,17 @@
-import { localeString } from "../resolver";
+import { inlineResolver0, localeString, inlineResolver1 } from "../resolver";
 
 export const getPages = /* groq */ `
 *[_type == "page"] {
   ...,
-  ${localeString("seoTitle")},
+  ${inlineResolver0("seoTitle")},
+  gallery {
+    ...,
+    ${localeString("sectionTitle")},
+    slides[] {
+      ...,
+      ${inlineResolver1("title")}
+    }
+  },
   sections[] {
     _type == "gallerySection" => {
       ...,

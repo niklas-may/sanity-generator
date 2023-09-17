@@ -11,10 +11,10 @@
     "sg": "build/cli/main.js"
   },
   "scripts": {
-    "dev": "npx nodemon --ignore playground/sanity-generator/ --exec ts-node -- src/cli/main generate --config ./playground/sanity-generator.config.ts",
-    "dev:sanity": " npx ts-node src/cli/main generate --config ./playground/sanity/sanity-generator.config.ts --watch & cd ./playground/sanity && sanity dev",
-    "build": "rimraf ./build && tsc && cp -r src/static build/static",
-    "preview": "node build/cli/main.js generate --config ./playground/sanity-generator.config.ts"
+    "dev": "npx nodemon --ignore playground/client/ --exec ts-node -- src/cli/main generate --config ./playground/client/sanity-generator.config.ts",
+    "dev:sanity": "yarn dev & cd ./playground/cms && sanity dev",
+    "preview": "npx ts-node src/cli/main generate --config ./playground/client/sanity-generator.config.ts --watch ",
+    "build": "rimraf ./build && tsc && cp -r src/static build/static"
   },
   "devDependencies": {
     "@types/node": "^20.5.9",
