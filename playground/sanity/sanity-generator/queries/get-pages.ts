@@ -3,20 +3,14 @@ import { localeString } from "../resolver";
 export const getPages = /* groq */ `
 *[_type == "page"] {
   ...,
-  gallery {
-    ...,
-    slides[] {
-      ...,
-      ${localeString("title")}
-    }
-  },
+  ${localeString("seoTitle")},
   sections[] {
     _type == "gallerySection" => {
       ...,
       ${localeString("sectionTitle")},
       slides[] {
         ...,
-        ${localeString("slideTitle")}
+        ${localeString("title")}
       }
     },
     _type == "textSection" => {

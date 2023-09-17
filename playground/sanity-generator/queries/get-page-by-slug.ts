@@ -1,32 +1,37 @@
-import { inlineResolver0, localeString } from "../resolver";
-
 export const getPageBySlug = /* groq */ `
 *[_type == "page" && slug.current == $slug] {
   ...,
+  "seoTitle": {
+    "germanTitle": seoTitle.de,
+    "englishTitle": seoTitle.en
+  },
   gallery {
     ...,
+    "sectionTitle": coalesce(sectionTitle[$lang], sectionTitle.en),
     slides[] {
       ...,
-      ${inlineResolver0("SUUPER")}
+      "title": {
+        "super": "cool"
+      }
     }
   },
   sections[] {
     _type == "gallerySection" => {
       ...,
-      ${localeString("sectionTitle")},
+      "sectionTitle": coalesce(sectionTitle[$lang], sectionTitle.en),
       slides[] {
         ...,
-        ${localeString("slideTitle")}
+        "title": coalesce(title[$lang], title.en)
       }
     },
     _type == "textSection" => {
       ...,
-      ${localeString("title")}
+      "title": coalesce(title[$lang], title.en)
     },
     _type == "featuresSection" => {
       ...,
-      ${localeString("title")},
-      ${localeString("subtitle")}
+      "title": coalesce(title[$lang], title.en),
+      "subtitle": coalesce(subtitle[$lang], subtitle.en)
     }
   }
 }[0]
