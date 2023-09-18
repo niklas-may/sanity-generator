@@ -12,6 +12,7 @@ export async function serveConfig(
   });
 
   try {
+    console.log("config", args.configPath)
     const config = await loadConfigModule(args.configPath, vite);
     const configModule = await vite.moduleGraph.getModuleByUrl(args.configPath);
     let configDeps = getDependencies(configModule);
@@ -34,7 +35,8 @@ export async function serveConfig(
       });
     }
   } catch (e) {
-    vite.ssrRewriteStacktrace(e);
+    console.log(e)
+    // vite.ssrRewriteStacktrace(e);
   }
 }
 

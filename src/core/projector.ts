@@ -131,6 +131,7 @@ export class Projector {
                 types.add(resolverName);
               } else {
                 resolverName = curr.type;
+                types.add(resolverName);
               }
               const field = inline
                 ? `${this.resolvers[resolverName](curr.name)}`

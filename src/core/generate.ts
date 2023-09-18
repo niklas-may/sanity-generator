@@ -7,7 +7,6 @@ import { paramCase } from "change-case";
 import { Projector } from "./projector";
 import { mergeOptions, createMissingDirectories, writeTypeScript, prettifyGroq } from "./lib";
 
-
 export async function generate<T extends Record<string, any>>(config: Config<T>, options?: Options) {
   const opts = mergeOptions(options);
 
@@ -34,7 +33,7 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
       const code = `export const ${queryName} = /* groq */\`\n${query}\``;
       const filePath = path.resolve(opts.outPath, "queries", `${paramCase(queryName)}.ts`);
 
-     await writeTypeScript(filePath, code);
+      await writeTypeScript(filePath, code);
     }
   }
   let usedResolvers = 0;
@@ -42,7 +41,6 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
     const { schemas, types, resolvers } = processSchema(config, { inlineResolver: false });
     usedResolvers = types.size;
     createMissingDirectories(path.join(opts.outPath, "resolver"));
-
 
     wirteResolver(types, resolvers, path.join(opts.outPath, "resolver"));
 
@@ -92,10 +90,9 @@ function processSchema<T extends Record<string, any>>(config: Config<T>, options
   return { schemas, types, resolvers: projector.resolvers };
 }
 
-function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, dir: string) {
+async function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, dir: string) {
   let resolverCode = "";
 
   names.forEach((t) => (resolverCode += `export const ${t} = ${serializeJs(resolvers[t])}; \n \n`));
-  writeTypeScript(path.resolve(dir, "index.ts"), resolverCode);
+  await writeTypeScript(path.resolve(dir, "index.ts"), resolverCode);
 }
-

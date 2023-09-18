@@ -14,12 +14,15 @@
     "dev": "npx nodemon --ignore playground/client/ --exec ts-node -- src/cli/main generate --config ./playground/client/sanity-generator.config.ts",
     "dev:sanity": "yarn dev & cd ./playground/cms && sanity dev",
     "preview": "npx ts-node src/cli/main generate --config ./playground/client/sanity-generator.config.ts --watch ",
-    "build": "rimraf ./build && tsc && cp -r src/static build/static"
+    "build": "rimraf ./build && tsc && cp -r src/static build/static",
+    "test": "vitest"
   },
   "devDependencies": {
     "@types/node": "^20.5.9",
+    "sanity": "^3.16.7",
     "tslib": "^2.6.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.4"
   },
   "dependencies": {
     "change-case": "^4.1.2",

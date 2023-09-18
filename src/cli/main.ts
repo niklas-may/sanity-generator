@@ -25,7 +25,7 @@ program
           "Config file not found. Run the init command to generate a config file or use the --config <path-to-config-file> to specify the location."
         );
 
-      serveConfig({ configPath: filePath, watch: !!watch }, async (config) => await generate(...config));
+      serveConfig({ configPath: path.resolve(process.cwd(), filePath), watch: !!watch }, async (config) => await generate(...config));
     } catch (e) {
       consola.error(e);
     }
