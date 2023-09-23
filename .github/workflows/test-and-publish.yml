@@ -16,9 +16,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies and build 🔧
         run: yarn install --frozen-lockfile && yarn build
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Test
-        run: yarn test
+        run: yarn test --run
+      
+      
