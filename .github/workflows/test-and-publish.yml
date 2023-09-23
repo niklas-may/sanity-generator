@@ -1,6 +1,5 @@
 name: Test and Publish to NPM
 on:
-  workflow_dispatch:
   release:
     types: [created]
 jobs:
@@ -23,5 +22,9 @@ jobs:
         with:
           name: test-results
           path: ./test-results.xml
+      - name: Publish package on NPM 📦
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
       
