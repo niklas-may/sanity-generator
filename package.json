@@ -11,22 +11,28 @@
     "sg": "build/cli/main.js"
   },
   "scripts": {
-    "dev": "npx nodemon --ignore playground/sanity-generator/ --exec ts-node -- src/cli/main generate --config ./playground/sanity-generator.config.ts",
-    "dev:sanity": "cd ./playground/sanity && sanity dev",
+    "dev": "npx nodemon --ignore playground/generator-output/ --exec ts-node -- src/cli/main generate --config ./playground/sanity-generator.config.ts",
+    "dev:test": "npx nodemon --ignore test/generator-output/ --exec ts-node -- src/cli/main generate --config ./test/ressources/generator-config.ts",
+    "dev:sanity": "yarn dev & cd playground && yarn dev",
+    "preview": "npx ts-node src/cli/main generate --config ./client/sanity-generator.config.ts --watch ",
     "build": "rimraf ./build && tsc && cp -r src/static build/static",
-    "preview": "node build/cli/main.js generate --config ./playground/sanity-generator.config.ts"
+    "test": "vitest --run",
+    "test:dev": "NODE_ENV=dev vitest"
   },
   "devDependencies": {
     "@types/node": "^20.5.9",
+    "picosanity": "^4.1.1",
+    "sanity": "^3.16.7",
     "tslib": "^2.6.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.4"
   },
   "dependencies": {
     "change-case": "^4.1.2",
     "commander": "^11.0.0",
     "consola": "^3.2.3",
     "defu": "^6.1.2",
-    "groqfmt-nodejs": "^0.0.5",
+    "groqfmt-nodejs": "^0.0.6",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.1",
     "serialize-javascript": "^6.0.1",

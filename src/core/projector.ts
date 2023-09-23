@@ -1,26 +1,31 @@
-import { wrap } from "module";
 import type { Resolver, DocumentOrField } from "../types";
 import { consola } from "consola";
-import { isConstructorTypeNode } from "typescript";
 
+type ObjectMode = "wraped" | "naked";
 type TraversalArguments = {
   fields: Array<DocumentOrField>;
   foundTypes?: Set<string>;
   inline: boolean;
-  objectMode?: "wraped" | "naked";
+  objectMode?: ObjectMode;
 };
 
 export class Projector {
+  inlineResolverId = 0;
   resolvers: Record<string, Resolver>;
   customTypes: Set<string>;
 
   constructor(resolvers?: Record<string, Resolver>) {
     this.resolvers = resolvers ?? {};
     this.customTypes = new Set(Object.keys(this.resolvers));
+    this.customTypes.add("inlineResolver");
   }
 
   #isCustomType(type: string) {
     return this.customTypes.has(type);
+  }
+
+  #hasInlineResolver(field: DocumentOrField) {
+    return typeof field.generator?.resolver === "function";
   }
 
   #hasCustomField(types: string[]): boolean | Set<string> {
@@ -37,9 +42,34 @@ export class Projector {
     return field.of || field.fields || false;
   }
 
-  #reduceTypes(field: DocumentOrField, prevAcc?: string[]): string[] {
+  #mybeAddInlineResolver(field: DocumentOrField, arr: string[]) {
+    if (typeof field.generator?.resolver === "function") {
+      let resolverName = "";
+
+      for (let [key, val] of Object.entries(this.resolvers)) {
+        if (val.toString() === field.generator.resolver.toString()) {
+          resolverName = key;
+        }
+      }
+
+      if (resolverName === "") {
+        resolverName = `inlineResolver${this.inlineResolverId}`;
+        this.inlineResolverId += 1;
+      }
+
+      this.resolvers[resolverName] = field.generator.resolver;
+      field.type = resolverName;
+      this.customTypes.add(resolverName);
+      field.generator.resolver = undefined;
+
+      arr.push(resolverName);
+    }
+  }
+
+  #reduceTypes(field: DocumentOrField, prevAcc: string[] = []): string[] {
     return (field.of || field.fields || []).reduce((acc: string[], curr: DocumentOrField) => {
       acc.push(curr.type);
+      this.#mybeAddInlineResolver(curr, acc);
 
       if (this.#getSubfields(curr)) {
         return this.#reduceTypes(curr, acc);
@@ -48,43 +78,46 @@ export class Projector {
     }, prevAcc ?? []);
   }
 
+  #warpField(objectMode: ObjectMode, children: string, name: string) {
+    if (objectMode === "wraped") {
+      return `_type == '${name}' =>  {\n 
+      ${children} 
+     } `;
+    } else return children;
+  }
+
   #projectNodeAndSpread({ fields, foundTypes, inline, objectMode }: TraversalArguments): [string, Set<string>] {
     const types = foundTypes ?? new Set();
 
     return [
       fields
         .sort((a) => (this.#isCustomType(a.type) || this.#getSubfields(a) ? 1 : -1))
-        .reduce((acc: string, curr) => {
-          const subFields = this.#getSubfields(curr);
+        .reduce(
+          (acc: string, curr) => {
+            const subFields = this.#getSubfields(curr);
 
-          if (["array", "object"].includes(curr.type) && typeof subFields !== "boolean") {
-            const childCustomTypes = this.#hasCustomField(this.#reduceTypes(curr));
+            if (
+              ["array", "object"].includes(curr.type) &&
+              typeof subFields !== "boolean" &&
+              !this.#hasInlineResolver(curr)
+            ) {
+              const childCustomTypes = this.#hasCustomField(this.#reduceTypes(curr));
 
-            if (childCustomTypes instanceof Set) {
-              childCustomTypes.forEach((v) => types.add(v));
+              if (childCustomTypes instanceof Set) {
+                childCustomTypes.forEach((v) => types.add(v));
 
-              if (curr.type === "array") {
-                return acc.concat(
-                  curr.name,
-                  `[]{\n ${
-                    this.#projectNodeAndSpread({
-                      fields: subFields,
-                      foundTypes: childCustomTypes,
-                      inline,
-                      objectMode: curr.of.length > 1 ? "wraped" : "naked",
-                    })[0]
-                  } \n}, `
-                );
-              } else {
-                if (objectMode === "wraped") {
+                if (curr.type === "array") {
+                  const objectMode = curr.of.length > 1 ? "wraped" : "naked";
                   return acc.concat(
-                    `_type == '${curr.name}' =>  {\n ${
-                      this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0]
+                    curr.name,
+                    `[]{\n ..., ${
+                      this.#projectNodeAndSpread({
+                        fields: subFields,
+                        foundTypes: childCustomTypes,
+                        inline,
+                        objectMode,
+                      })[0]
                     } \n}, `
-                  );
-                } else if (objectMode === "naked") {
-                  return acc.concat(
-                    ` ${this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0]} `
                   );
                 } else {
                   return acc.concat(
@@ -94,20 +127,32 @@ export class Projector {
                     } \n}, `
                   );
                 }
+              } else {
+                return acc;
               }
+            } else if (this.#isCustomType(curr.type) || this.#hasInlineResolver(curr)) {
+              let resolverName = curr.type;
+
+              // Would be nice to deal with inline Resolver on in one place...
+              if (this.#hasInlineResolver(curr)) {
+                resolverName = `inlineResolver${this.inlineResolverId}`;
+                this.resolvers[resolverName] = curr.generator.resolver;
+                this.inlineResolverId += 1;
+                types.add(resolverName);
+              } else {
+                resolverName = curr.type;
+                types.add(resolverName);
+              }
+              const field = inline
+                ? `${this.resolvers[resolverName](curr.name)}`
+                : `"__start_resolve": "${resolverName} ${curr.name}__end__resolve"`;
+              return acc.concat(this.#warpField(objectMode, field, curr.name), ",\n");
             } else {
-              return acc
+              return acc;
             }
-       
-          } else if (this.#isCustomType(curr.type)) {
-            const field = inline
-              ? `${this.resolvers[curr.type](curr.name)}`
-              : `"__start_resolve": "${curr.type} ${curr.name}__end__resolve"`;
-            return acc.concat(field, ",\n");
-          } else {
-            return acc;
-          }
-        }, objectMode ? "\n" : "...,\n"),
+          },
+          objectMode ? "\n" : "...,\n"
+        ),
       types,
     ];
   }

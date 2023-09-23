@@ -1,6 +1,12 @@
+import { GeneratorSchemaDefinition} from './../../../src/types/index'
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
-export const pageSchema = defineType({
+declare module 'sanity' {
+  interface BaseSchemaDefinition extends GeneratorSchemaDefinition {}
+}
+
+type Page = any
+export const pageSchema: Page = defineType({
   name: 'page',
   type: 'document',
   groups: [
@@ -10,8 +16,8 @@ export const pageSchema = defineType({
       default: true,
     },
     {
-      name: 'seo',
       title: 'SEO',
+      name: 'seo',
     },
   ],
   fields: [
@@ -21,14 +27,26 @@ export const pageSchema = defineType({
       group: 'seo',
       name: 'seoTitle',
       description: 'Used for Open Graph previews implemented  by facebook, twitter, google etc.',
+      generator: {
+        resolver: (name) => /* groq */`
+          "${name}": {
+            "germanTitle": ${name}.de,
+            "englishTitle": ${name}.en
+          }
+        `
+      },
     }),
     defineField({
       type: 'object',
       name: 'gallery',
+   
+   
+
       fields: [
         defineField({
           type: 'localeString',
           name: 'sectionTitle',
+          
         }),
         defineField({
           type: 'array',
@@ -39,8 +57,11 @@ export const pageSchema = defineType({
               name: 'slide',
               fields: [
                 {
-                  type: 'localeString',
+                  type: 'string',
                   name: 'title',
+                  generator: {
+                    resolver: (name) => /* groq */`"${name}": {"super": "cool"}`,
+                  },
                 },
               ],
             }),
@@ -86,6 +107,20 @@ export const pageSchema = defineType({
             defineField({
               type: 'localeString',
               name: 'title',
+            }),
+          ],
+        }),
+        defineField({
+          type: 'object',
+          name: 'featuresSection',
+          fields: [
+            defineField({
+              type: 'localeString',
+              name: 'title',
+            }),
+            defineField({
+              type: 'localeString',
+              name: 'subtitle',
             }),
           ],
         }),

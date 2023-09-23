@@ -1,3 +1,5 @@
+![Tests](https://img.shields.io/github/workflow/status/niklas-may/sanity-generator/Test%20and%20Publish%20to%20NPM/main)
+
 # Sanity Generator
 
 Sanity Generator aims to simplify the process of defining schemas and queries when working with [Sanity](https://www.sanity.io/) CMS.
