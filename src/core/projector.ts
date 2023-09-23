@@ -44,14 +44,25 @@ export class Projector {
 
   #mybeAddInlineResolver(field: DocumentOrField, arr: string[]) {
     if (typeof field.generator?.resolver === "function") {
-      const resolverName = `inlineResolver${this.inlineResolverId}`;
+      let resolverName = "";
+
+      for (let [key, val] of Object.entries(this.resolvers)) {
+        if (val.toString() === field.generator.resolver.toString()) {
+          resolverName = key;
+        }
+      }
+
+      if (resolverName === "") {
+        resolverName = `inlineResolver${this.inlineResolverId}`;
+        this.inlineResolverId += 1;
+      }
+
       this.resolvers[resolverName] = field.generator.resolver;
       field.type = resolverName;
       this.customTypes.add(resolverName);
       field.generator.resolver = undefined;
 
       arr.push(resolverName);
-      this.inlineResolverId += 1;
     }
   }
 

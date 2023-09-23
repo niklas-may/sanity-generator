@@ -1,42 +1,40 @@
+import {
+  inlineResolver0,
+  specialNumber,
+  localeString,
+  inlineResolver1,
+} from "../resolver";
+
 export const getTest = /* groq */ `
 *[_id == "0cccfcd0-c69d-4832-9929-63ff2c6e2b58"] {
   ...,
-  "primitiveFactory-wrapped": primitiveFactory,
-  "customPrimitive-special-number": customPrimitive,
-  "customComplex": coalesce(customComplex[$lang], customComplex.en),
-  "complexFactory-wrapped": {
-    "title": complexFactory.title,
-    "subtitle": complexFactory.subtitle
-  },
+  ${inlineResolver0("primitiveFactory")},
+  ${specialNumber("customPrimitive")},
+  ${localeString("customComplex")},
+  ${inlineResolver1("complexFactory")},
   arrayMultipleTypes[] {
     ...,
     _type == "customComplex" => {
-      "customComplex": coalesce(customComplex[$lang], customComplex.en)
+      ${localeString("customComplex")}
     },
     _type == "complexFactory" => {
-      "complexFactory-wrapped": {
-        "title": complexFactory.title,
-        "subtitle": complexFactory.subtitle
-      }
+      ${inlineResolver1("complexFactory")}
     }
   },
   arraySlingleType[] {
     ...,
-    "customPrimitive-special-number": customPrimitive
+    ${specialNumber("customPrimitive")}
   },
   arraySlingleComplextType[] {
     ...,
-    "customComplex": coalesce(customComplex[$lang], customComplex.en)
+    ${localeString("customComplex")}
   },
   object {
     ...,
-    "customPrimitive-special-number": customPrimitive,
-    "customComplex": coalesce(customComplex[$lang], customComplex.en),
-    "primitiveFactory-wrapped": primitiveFactory,
-    "complexFactory-wrapped": {
-      "title": complexFactory.title,
-      "subtitle": complexFactory.subtitle
-    }
+    ${specialNumber("customPrimitive")},
+    ${localeString("customComplex")},
+    ${inlineResolver0("primitiveFactory")},
+    ${inlineResolver1("complexFactory")}
   }
 }[0]
 `;
