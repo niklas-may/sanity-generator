@@ -16,7 +16,7 @@
     "dev:sanity": "yarn dev & cd playground && yarn dev",
     "preview": "npx ts-node src/cli/main generate --config ./client/sanity-generator.config.ts --watch ",
     "build": "rimraf ./build && tsc && cp -r src/static build/static",
-    "test": "vitest",
+    "test": "vitest --run",
     "test:dev": "NODE_ENV=dev vitest"
   },
   "devDependencies": {
