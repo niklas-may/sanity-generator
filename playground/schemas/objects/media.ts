@@ -1,4 +1,4 @@
-import {Resolver} from './../../../../src/types/'
+import {Resolver} from './../../../src/types/'
 import {Image} from '../../components/Image'
 
 export const mediaSchema = {

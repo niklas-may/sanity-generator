@@ -1,8 +1,8 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createConfig } from "../../src";
-import { pageSchema } from "./../cms/schemas/documents";
-import { localStringResolver, mediaResolver } from "./../cms/schemas/objects";
+import { createConfig } from "../src";
+import { pageSchema } from "./schemas/documents";
+import { localStringResolver, mediaResolver } from "./schemas/objects";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,7 +30,7 @@ export default createConfig(
     },
   },
   {
-    // inlineResolver: true,
-    outPath: path.resolve(__dirname, "./build"),
+    inlineResolver: true,
+    outPath: path.resolve(__dirname, "./generator-output"),
   }
 );

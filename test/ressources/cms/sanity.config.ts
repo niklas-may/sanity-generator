@@ -1,15 +1,14 @@
 import {defineConfig} from 'sanity'
 import {deskTool} from 'sanity/desk'
 import {visionTool} from '@sanity/vision'
-import {schemaTypes} from './schema-types'
-import config from "../sanity-client-config"
+import {schemaTypes} from './schemas'
 
 export default defineConfig({
   name: 'default',
-  title: 'Sanity-Monolyth',
+  title: 'Sanity Generator',
 
-  projectId: config.projectId,
-  dataset: config.dataset,
+  projectId: "gmpiajy6",
+  dataset: "test-suite",
 
   plugins: [deskTool(), visionTool()],
 

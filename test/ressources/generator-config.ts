@@ -1,9 +1,9 @@
-import { fileURLToPath } from 'url';
-import path from 'path';
+import { fileURLToPath } from "url";
+import path from "path";
 import { createConfig } from "../../src";
-import { testDocumentSchema } from "./schemas/documents/test";
-import { specialNumberResolver } from "./schemas/types/special-number";
-import { localStringResolver } from "./schemas/types/locale-string";
+import { testDocumentSchema } from "./cms/schemas/documents/test";
+import { specialNumberResolver } from "./cms/schemas/types/special-number";
+import { localStringResolver } from "./cms/schemas/types/locale-string";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,5 +25,7 @@ export default createConfig(
       `,
     },
   },
-  { outPath: path.resolve(__dirname, "./build"), inlineResolver: false}
+  { outPath: path.resolve(__dirname, "../generator-output"), inlineResolver: true}
 );
+
+

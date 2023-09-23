@@ -1,4 +1,4 @@
-import { GeneratorSchemaDefinition} from './../../../../src/types/index'
+import { GeneratorSchemaDefinition} from './../../../src/types/index'
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
 declare module 'sanity' {
@@ -11,8 +11,8 @@ export const pageSchema: Page = defineType({
   type: 'document',
   groups: [
     {
-      title: 'Content',
       name: 'content',
+      title: 'Content',
       default: true,
     },
     {
