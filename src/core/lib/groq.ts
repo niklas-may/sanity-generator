@@ -41,7 +41,7 @@ export async function prettifyGroq(code: string) {
 
     const queryHighlighted = query && Array.isArray(range) ? colorizeSubstring(query, range[0], range[1]) : query;
 
-    consola.error("Groq Syntx Errror", msg, queryHighlighted);
+    consola.error("Groq Syntx Errror", msg || e, queryHighlighted);
 
     process.exit(1);
   }
