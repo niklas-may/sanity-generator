@@ -2216,10 +2216,10 @@ groq-js@^1.1.12:
   resolved "https://registry.yarnpkg.com/groq-js/-/groq-js-1.3.0.tgz#7fc03a41c0b5a4160edfd714735e756d653b637a"
   integrity sha512-J7+JcxM0OvoowSkhNZAabCLueldEMkKzd9ufCEDRjKvkD1PcBUwyfsGvxUI59UojRCqFqp0y76LLzPzwSZTetw==
 
-groqfmt-nodejs@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/groqfmt-nodejs/-/groqfmt-nodejs-0.0.5.tgz#c9a706339b947af093986a3776d73ddbac095169"
-  integrity sha512-mxsnz52vJQOeHgV56EzJQJCenwmH5FE7nJ4DRCCd/W3HFDTN78rOYMMEEGvsQkTutFKzE7q8LFndcIfUE3mWGQ==
+groqfmt-nodejs@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/groqfmt-nodejs/-/groqfmt-nodejs-0.0.6.tgz#5f18a70800eaefb8cc90b19e8ed2585093ec52d3"
+  integrity sha512-jDp+AVNhatg5+5OehFEHv745/1zkwFN6CmGRnm1/AFU2vmSNHUpM0H2kZw/VaNOEI8NBoGpVD63VnyHFe2wvEQ==
   dependencies:
     mkdirp "^3.0.1"
 
