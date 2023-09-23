@@ -1,4 +1,4 @@
-![Tests](https://img.shields.io/github/actions/workflow/status/niklas-may/sanity-generator/test-and-publish.yml?branch=main)
+![Tests](https://img.shields.io/github/actions/workflow/status/niklas-may/sanity-generator/test-and-publish.yml?branch=main) ![npm](https://img.shields.io/npm/v/sanity-generator)
 
 # Sanity Generator
 
