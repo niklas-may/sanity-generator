@@ -31,9 +31,9 @@ function colorizeSubstring(source, startIndex, endIndex) {
   return beforeIndex + coloredSubstring + afterIndex;
 }
 
-export async function prettifyGroq(code: string) {
+export function prettifyGroq(code: string) {
   try {
-    return await format(String(code).trim());
+    return format(String(code).trim());
   } catch (e: any) {
     const query = getPart(String(e), /echo\s+"([^"]+)"/);
     const msg = getPart(String(e), /parsing query:\s+parse\s+error\s(.+)/);

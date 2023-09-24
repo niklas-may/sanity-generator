@@ -1,10 +1,80 @@
-import {
-  inlineResolver0,
-  inlineResolver1,
-  localeString,
-  inlineResolver2,
-} from "../resolver";
-
-// prettier-ignore
-export const getPageBySlug = /* groq */`
-*[_type == "page" && slug.current == $slug] { ..., ${inlineResolver0("seoTitle")}, ${inlineResolver1("pageHeader")}, gallery { ..., ${localeString("sectionTitle")}, slides[] { ..., slide { ..., ${inlineResolver2("title")} } } }, sections[] { ..., gallerySection { ..., ${localeString("sectionTitle")}, slides[] { ..., slide { ..., ${localeString("title")} } } }, textSection { ..., ${localeString("title")} }, featuresSection { ..., ${localeString("title")}, ${localeString("subtitle")} } } }[0] `
+export const getPageBySlug = /* groq */ `
+*[_type == "page" && slug.current == $slug] {
+  ...,
+  "pageHeader": {
+    "title": pageHeader.title,
+    "subtitle": pageHeader.subtitle
+  },
+  featuredImage {
+    _type,
+    type,
+    type == "image" => {
+      image {
+        "title": asset->.title,
+        "altText": asset->.altText,
+        "src": asset->.url,
+        "metaData": {
+          "crop": crop,
+          "hotspot": hotspot,
+          "width": asset->.metadata.dimensions.width,
+          "height": asset->.metadata.dimensions.height
+        }
+      }
+    },
+    type == "video" => {
+      "player": player.asset-> {
+        "playbackId": playbackId,
+        "ratio": data.aspect_ratio,
+        thumbTime
+      },
+      "mood": mood.asset-> {
+        "playbackId": playbackId,
+        "ratio": data.aspect_ratio
+      }
+    }
+  },
+  "seoTitle": coalesce(seoTitle[$lang], seoTitle.en),
+  sections[] {
+    ...,
+    _type == "gallerySection" => {
+      ...,
+      "sectionTitle": coalesce(sectionTitle[$lang], sectionTitle.en),
+      slides[] {
+        ...,
+        slide {
+          _type,
+          type,
+          type == "image" => {
+            image {
+              "title": asset->.title,
+              "altText": asset->.altText,
+              "src": asset->.url,
+              "metaData": {
+                "crop": crop,
+                "hotspot": hotspot,
+                "width": asset->.metadata.dimensions.width,
+                "height": asset->.metadata.dimensions.height
+              }
+            }
+          },
+          type == "video" => {
+            "player": player.asset-> {
+              "playbackId": playbackId,
+              "ratio": data.aspect_ratio,
+              thumbTime
+            },
+            "mood": mood.asset-> {
+              "playbackId": playbackId,
+              "ratio": data.aspect_ratio
+            }
+          }
+        }
+      }
+    },
+    _type == "textSection" => {
+      ...,
+      "title": coalesce(title[$lang], title.en)
+    }
+  }
+}[0]
+`;

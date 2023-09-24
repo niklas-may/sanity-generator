@@ -30,8 +30,7 @@ export default createConfig(
     },
   },
   {
-    inlineResolver: false,
-    trim: true,
+    inlineResolver: true,
     outPath: path.resolve(__dirname, './generator-output'),
   },
 )

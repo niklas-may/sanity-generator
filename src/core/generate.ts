@@ -19,10 +19,10 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
 
   consola.info("Looking for GROQ syntax errors...");
 
-  for (const [_, queryFn] of configQueries) {
+  configQueries.forEach(([_, queryFn]) => {
     const queryString = queryFn({ schemas: schemas });
-    await prettifyGroq(queryString);
-  }
+    prettifyGroq(queryString);
+  });
 
   consola.info("No errors found.");
 
@@ -31,7 +31,7 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
       configQueries.map(async ([queryName, queryFn]) => {
         const queryString = queryFn({ schemas: schemas });
 
-        const query = await prettifyGroq(queryString);
+        const query = prettifyGroq(queryString);
         const queryProcessed = opts.trim ? trimString(query) : query;
 
         const code = `${
@@ -42,6 +42,7 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
         return await writeTypeScript(filePath, code);
       })
     );
+    await writeBarrelFile(configQuerieNames, path.resolve(opts.outPath, "queries"));
   }
   let usedResolvers = 0;
   if (opts?.inlineResolver === false) {
@@ -49,10 +50,9 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
     usedResolvers = types.size;
     createMissingDirectories(path.join(opts.outPath, "resolver"));
 
-
     await Promise.all(
       configQueries.map(async ([queryName, queryFn]) => {
-        const queryTemplate = await prettifyGroq(queryFn({ schemas: schemas }));
+        const queryTemplate = prettifyGroq(queryFn({ schemas: schemas }));
         const { query, resolverDependencies } = Projector.insertResolver(queryTemplate);
 
         const queryProcessed = opts.trim ? trimString(query) : query;
@@ -70,7 +70,6 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
     );
     await wirteResolver(types, resolvers, path.join(opts.outPath, "resolver"), opts);
     await writeBarrelFile(configQuerieNames, path.resolve(opts.outPath, "queries"));
-
   }
 
   if (opts.inlineResolver) {

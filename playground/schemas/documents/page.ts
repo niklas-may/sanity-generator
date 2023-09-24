@@ -1,6 +1,5 @@
-import {defineArrayMember, defineField, defineType} from 'sanity'
-import {header} from '../factories'
-import {title} from 'process'
+import { defineField, defineType} from 'sanity'
+import {headerFactory, mediaFactory} from '../factories'
 
 type Page = any
 export const pageSchema: Page = defineType({
@@ -18,67 +17,12 @@ export const pageSchema: Page = defineType({
     },
   ],
   fields: [
+    headerFactory('pageHeader', 'content'),
+    mediaFactory("featuredImage", 'content', {video: false}),
     defineField({
       type: 'localeString',
-      title: 'Title (Open Graph)',
       name: 'seoTitle',
-      description: 'Used for Open Graph previews implemented  by facebook, twitter, google etc.',
-      generator: {
-        resolver: (name) => /* groq */ `
-          "${name}": {
-            "germanTitle": ${name}.de,
-            "englishTitle": ${name}.en
-          }
-        `,
-      },
-    }),
-    header('pageHeader', 'content'),
-    defineField({
-      type: 'object',
-      name: 'gallery',
-      group: 'content',
-
-      fields: [
-        defineField({
-          type: 'localeString',
-          name: 'sectionTitle',
-        }),
-        defineField({
-          type: 'array',
-          name: 'slides',
-          of: [
-            defineArrayMember({
-              type: 'object',
-              name: 'slide',
-              fields: [
-                defineField({
-                  name: 'image',
-                  type: 'image',
-                }),
-                {
-                  type: 'string',
-                  name: 'title',
-                  generator: {
-                    resolver: (name) => /* groq */ `"${name}": {"super": "cool"}`,
-                  },
-                },
-              ],
-              preview: {
-                select: {
-                  title: 'title',
-                  image: "image"
-                },
-                prepare(props) {
-                  return {
-                    title: props.title,
-                    media: props.image
-                  }
-                },
-              },
-            }),
-          ],
-        }),
-      ],
+      group: 'seo',
     }),
     defineField({
       type: 'array',
@@ -96,20 +40,16 @@ export const pageSchema: Page = defineType({
             defineField({
               type: 'array',
               name: 'slides',
-              of: [
-                defineArrayMember({
-                  type: 'object',
-                  name: 'slide',
-                  fields: [
-                    defineField({
-                      type: 'localeString',
-                      name: 'title',
-                    }),
-                  ],
-                }),
-              ],
+              of: [mediaFactory('slide')],
             }),
           ],
+          preview: {
+            prepare() {
+              return {
+                title: 'Gallery Section',
+              }
+            },
+          },
         }),
         defineField({
           type: 'object',
@@ -120,22 +60,25 @@ export const pageSchema: Page = defineType({
               name: 'title',
             }),
           ],
-        }),
-        defineField({
-          type: 'object',
-          name: 'featuresSection',
-          fields: [
-            defineField({
-              type: 'localeString',
-              name: 'title',
-            }),
-            defineField({
-              type: 'localeString',
-              name: 'subtitle',
-            }),
-          ],
+          preview: {
+            prepare() {
+              return {
+                title: 'Text Section',
+              }
+            },
+          },
         }),
       ],
     }),
   ],
+  preview: {
+    select: {
+      title: 'pageHeader.title',
+    },
+    prepare(props) {
+      return {
+        title: props.title,
+      }
+    },
+  },
 })

@@ -32,7 +32,7 @@
     "commander": "^11.0.0",
     "consola": "^3.2.3",
     "defu": "^6.1.2",
-    "groqfmt-nodejs": "^0.0.6",
+    "groqfmt-nodejs": "^1.0.0",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.1",
     "serialize-javascript": "^6.0.1",

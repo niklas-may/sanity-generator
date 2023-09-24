@@ -29,23 +29,22 @@ describe.each(testConfigs)(`Run CLI from ${testSource} with $fileName`, async ({
   describe.each(queries)("Current Query: $queryName", ({ queryName }) => {
     const filePath = path.join(options.outPath, "queries", `${paramCase(queryName)}.ts`);
 
-    test(`Query file should exist`, () => {
+    test(`Should be written to disk`, () => {
       return expect(fs.existsSync(filePath)).toBe(true);
     });
 
-    test(`Query file should compile`, async () => {
+    test(`Should compile when imported`, async () => {
       return await importFresh(filePath).then((module) => {
-        console.log("Should compile");
         return expect(module[queryName]).toBeDefined();
       });
     });
 
-    test(`Query file should have reference query`, () => {
+    test(`Should have a reference query`, () => {
       return expectTypeOf(referenceConfig.queries[queryName]).toBeString();
     });
 
     test(
-      "Query result should match reference",
+      "Fetch result should match reference query",
       async () => {
         const params = { lang: "en" };
 

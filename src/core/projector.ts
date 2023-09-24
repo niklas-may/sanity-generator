@@ -47,7 +47,7 @@ export class Projector {
       let resolverName = "";
 
       for (let [key, val] of Object.entries(this.resolvers)) {
-        if (val.toString() === field.generator.resolver.toString()) {
+        if (val?.toString() === field.generator.resolver.toString()) {
           resolverName = key;
         }
       }
@@ -83,7 +83,13 @@ export class Projector {
       return `_type == '${name}' =>  {\n 
       ${children} 
      } `;
-    } else return children;
+    } else if (objectMode === "naked") {
+      return `
+        ${children}
+      `;
+    } else {
+      return children;
+    }
   }
 
   #projectNodeAndSpread({ fields, foundTypes, inline, objectMode }: TraversalArguments): [string, Set<string>] {
@@ -93,7 +99,7 @@ export class Projector {
       fields
         .sort((a) => (this.#isCustomType(a.type) || this.#getSubfields(a) ? 1 : -1))
         .reduce(
-          (acc: string, curr) => {
+          (acc: string, curr, index) => {
             const subFields = this.#getSubfields(curr);
 
             if (
@@ -121,10 +127,11 @@ export class Projector {
                   );
                 } else {
                   return acc.concat(
-                    curr.name,
-                    `{\n ${
-                      this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0]
-                    } \n}, `
+                    this.#warpField(
+                      objectMode,
+                      this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0],
+                      curr.name
+                    ), index < fields.length - 1 ? ',' : ''
                   );
                 }
               } else {

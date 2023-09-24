@@ -1,7 +1,8 @@
+import {Resolver} from './../../../src/types/index'
 import {defineField} from 'sanity'
 
-export const header = (name: string, group = "") =>
-  defineField({
+export function headerFactory(name: string, group = '') {
+  return defineField({
     type: 'object',
     name,
     group,
@@ -10,11 +11,14 @@ export const header = (name: string, group = "") =>
       {name: 'subtitle', type: 'string'},
     ],
     generator: {
-      resolver: (name: string) => /* groq */ `
-            "${name}-wrapped": {
-              "title": ${name}.title,
-              "subtitle": ${name}.subtitle
-            }
-        `,
+      resolver,
     },
   })
+}
+
+const resolver: Resolver = (name: string) => /* groq */ `
+"${name}": {
+  "title": ${name}.title,
+  "subtitle": ${name}.subtitle
+}
+`
