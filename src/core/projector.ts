@@ -1,6 +1,8 @@
 import type { Resolver, DocumentOrField } from "../types";
 import { consola } from "consola";
 
+
+
 type ObjectMode = "wraped" | "naked";
 type TraversalArguments = {
   fields: Array<DocumentOrField>;
@@ -137,7 +139,8 @@ export class Projector {
                       this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0],
                       curr.name,
                       curr.type
-                    ), index < fields.length - 1 ? ',' : ''
+                    ),
+                    index < fields.length - 1 ? "," : ""
                   );
                 }
               } else {
@@ -164,36 +167,43 @@ export class Projector {
                 /**
                  * # What is a value?
                  * Where: left (blank til) alpha followed by coma or blank followed by }
-                 * 
+                 *
                  * # When to match
                  * When { or : is before the first value
-                 * 
+                 *
                  * # match
                  * object {
                  *   value
                  * }
-                 * 
-                 * # match
+                 *
+                 * # no match
                  * "object": {
                  *   value
                  * }
-                 * 
+                 *
                  * # no match
                  * "val": val
-                 * 
+                 *
                  */
 
-                const firstOpenBrace = field.indexOf("{");
-                const firstColon = field.indexOf(":");
-                const firstComa = field.indexOf(",");
-                const shouldUnwrap = firstOpenBrace < firstComa || firstColon < firstComa;
-
+                let shouldUnwrap = false;
+                shouldUnwrap = field.match(/^[\$\{a-zA-Z0-9\}\s]*[a-zA-Z\s]\{/g)?.some(Boolean);
+                console.log(shouldUnwrap);
                 if (shouldUnwrap) {
+
+                  const firstOpenBrace = field.indexOf("{");
+                  
+                  const match = field.search(/(?<!\$){/);
+                  if(match) {
+                    console.log("first { without ${", match, "reference", firstOpenBrace)
+                  }
+
+
                   const lastOpenBrace = field.lastIndexOf("}");
                   const unwrappedfield = field.substring(firstOpenBrace + 1, lastOpenBrace);
+                  // field = unwrappedfield;
 
-                  console.log("original", this.resolvers[resolverName].toString());
-                  console.log("unwrapped ", unwrappedfield);
+           
                   consola.info("WIP: Unwrap an object. See more above");
                 }
               }
