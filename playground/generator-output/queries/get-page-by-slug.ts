@@ -1,41 +1,79 @@
-import { inlineResolver0, localeString, inlineResolver1 } from "../resolver";
-
 export const getPageBySlug = /* groq */ `
 *[_type == "page" && slug.current == $slug] {
   ...,
-  ${inlineResolver0("seoTitle")},
-  gallery {
-    ...,
-    ${localeString("sectionTitle")},
-    slides[] {
-      ...,
-      slide {
-        ...,
-        ${inlineResolver1("title")}
-      }
-    }
+  "pageHeader": {
+    "title": pageHeader.title,
+    "subtitle": pageHeader.subtitle
   },
-  sections[] {
-    ...,
-    gallerySection {
-      ...,
-      ${localeString("sectionTitle")},
-      slides[] {
-        ...,
-        slide {
-          ...,
-          ${localeString("title")}
+  featuredImage {
+    _type,
+    type,
+    type == "image" => {
+      image {
+        "title": asset->.title,
+        "altText": asset->.altText,
+        "src": asset->.url,
+        "metaData": {
+          "crop": crop,
+          "hotspot": hotspot,
+          "width": asset->.metadata.dimensions.width,
+          "height": asset->.metadata.dimensions.height
         }
       }
     },
-    textSection {
+    type == "video" => {
+      "player": player.asset-> {
+        "playbackId": playbackId,
+        "ratio": data.aspect_ratio,
+        thumbTime
+      },
+      "mood": mood.asset-> {
+        "playbackId": playbackId,
+        "ratio": data.aspect_ratio
+      }
+    }
+  },
+  "seoTitle": coalesce(seoTitle[$lang], seoTitle.en),
+  sections[] {
+    ...,
+    _type == "gallerySection" => {
       ...,
-      ${localeString("title")}
+      "sectionTitle": coalesce(sectionTitle[$lang], sectionTitle.en),
+      slides[] {
+        ...,
+        slide {
+          _type,
+          type,
+          type == "image" => {
+            image {
+              "title": asset->.title,
+              "altText": asset->.altText,
+              "src": asset->.url,
+              "metaData": {
+                "crop": crop,
+                "hotspot": hotspot,
+                "width": asset->.metadata.dimensions.width,
+                "height": asset->.metadata.dimensions.height
+              }
+            }
+          },
+          type == "video" => {
+            "player": player.asset-> {
+              "playbackId": playbackId,
+              "ratio": data.aspect_ratio,
+              thumbTime
+            },
+            "mood": mood.asset-> {
+              "playbackId": playbackId,
+              "ratio": data.aspect_ratio
+            }
+          }
+        }
+      }
     },
-    featuresSection {
+    _type == "textSection" => {
       ...,
-      ${localeString("title")},
-      ${localeString("subtitle")}
+      "title": coalesce(title[$lang], title.en)
     }
   }
 }[0]

@@ -2,7 +2,7 @@ import path from 'path'
 import {fileURLToPath} from 'url'
 import {createConfig} from '../src'
 import {pageSchema} from './schemas/documents'
-import {localStringResolver, mediaResolver} from './schemas/objects'
+import {localStringResolver, mediaResolver} from './schemas/types'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -30,7 +30,7 @@ export default createConfig(
     },
   },
   {
-    inlineResolver: false,
+    inlineResolver: true,
     outPath: path.resolve(__dirname, './generator-output'),
   },
 )

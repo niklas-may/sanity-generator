@@ -11,7 +11,7 @@ export const testDocumentSchema = {
    *        - Complex field type
    * 1.2)   Custom types with Resolver
    *        - Primtive
-   *        - Coplex
+   *        - Complex
    * 1.3)   Inline Rsolver
    *        - Primitive
    *        - Complex
@@ -73,7 +73,7 @@ export const testDocumentSchema = {
       ],
     },
     /**
-     * 3) Second level array one type:
+     * 3) Second level array one complex type:
      */
     {
       type: 'array',
@@ -92,7 +92,7 @@ export const testDocumentSchema = {
      *        - Complex field type
      * 5.2)   Custom types with Resolver
      *        - Primtive
-     *        - Coplex
+     *        - Complex
      * 5.3)   Inline Rsolver
      *        - Primitive
      *        - Complex
