@@ -16,7 +16,6 @@
     "noImplicitAny": false,
 
     "skipLibCheck": true,
-    "baseUrl": ".",
     "paths": {
       "sanity-generator/*": ["src/*"]
     }
