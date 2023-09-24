@@ -16,10 +16,11 @@
     "noImplicitAny": false,
 
     "skipLibCheck": true,
+    "baseUrl": ".",
     "paths": {
       "sanity-generator/*": ["src/*"]
     }
   },
   "exclude": ["playground", "build", "src/static"],
-  "include": ["src", "test/generator-output"]
+  "include": ["src"]
 }
