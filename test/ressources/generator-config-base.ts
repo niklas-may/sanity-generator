@@ -25,7 +25,7 @@ export default createConfig(
       `,
     },
   },
-  { outPath: path.resolve(__dirname, "../generator-output"), inlineResolver: false}
+  { outPath: path.resolve(__dirname, "../generator-output"), inlineResolver: true}
 );
 
 
