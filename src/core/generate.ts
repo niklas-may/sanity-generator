@@ -3,12 +3,14 @@ import path from "path";
 import { consola } from "consola";
 import { rimrafSync } from "rimraf";
 import serializeJs from "serialize-javascript";
-import { paramCase } from "change-case";
+import { paramCase, pascalCase } from "change-case";
 import { Projector } from "./projector";
 import { mergeOptions, createMissingDirectories, writeTypeScript, prettifyGroq } from "./lib";
 
 export async function generate<T extends Record<string, any>>(config: Config<T>, options?: Options) {
   const opts = mergeOptions(options);
+  const configQueries = Object.entries(config.queries);
+  const configQuerieNames = Object.keys(config.queries);
 
   rimrafSync(`${opts.outPath}/*`, { glob: true });
   createMissingDirectories(path.join(opts.outPath, "queries"));
@@ -17,7 +19,7 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
 
   consola.info("Looking for GROQ syntax errors...");
 
-  for (const [_, queryFn] of Object.entries(config.queries)) {
+  for (const [_, queryFn] of configQueries) {
     const queryString = queryFn({ schemas: schemas });
     await prettifyGroq(queryString);
   }
@@ -25,13 +27,15 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
   consola.info("No errors found.");
 
   if (opts?.inlineResolver === true) {
-    for (const [queryName, queryFn] of Object.entries(config.queries)) {
+    for (const [queryName, queryFn] of configQueries) {
       const queryString = queryFn({ schemas: schemas });
 
       const query = await prettifyGroq(queryString);
-      const queryProcessed = opts.trim ? trimString(query) : query
+      const queryProcessed = opts.trim ? trimString(query) : query;
 
-      const code = `${opts.trim ? '// prettier-ignore\n' : ''}export const ${queryName} = /* groq */\`\n${queryProcessed}\``;
+      const code = `${
+        opts.trim ? "// prettier-ignore\n" : ""
+      }export const ${queryName} = /* groq */\`\n${queryProcessed}\``;
       const filePath = path.resolve(opts.outPath, "queries", `${paramCase(queryName)}.ts`);
 
       await writeTypeScript(filePath, code);
@@ -45,15 +49,15 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
 
     wirteResolver(types, resolvers, path.join(opts.outPath, "resolver"), opts);
 
-    for (const [queryName, queryFn] of Object.entries(config.queries)) {
+    for (const [queryName, queryFn] of configQueries) {
       const queryTemplate = await prettifyGroq(queryFn({ schemas: schemas }));
       const { query, resolverDependencies } = Projector.insertResolver(queryTemplate);
 
-      const queryProcessed = opts.trim ? trimString(query) : query
+      const queryProcessed = opts.trim ? trimString(query) : query;
 
       const code = [
         resolverDependencies.size > 0 ? `import { ${[...resolverDependencies].join(", ")}} from '../resolver'\n` : "",
-        `${opts.trim ? '// prettier-ignore\n' : ''} export const ${queryName} = /* groq */\`\n${queryProcessed}\``,
+        `${opts.trim ? "// prettier-ignore\n" : ""} export const ${queryName} = /* groq */\`\n${queryProcessed}\``,
       ]
         .filter(Boolean)
         .join("\n");
@@ -63,10 +67,12 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
     }
   }
 
+  await writeBarrelFile(configQuerieNames, path.resolve(opts.outPath, "queries"));
+
   if (opts.inlineResolver) {
-    consola.info(`${Object.entries(config.queries).length} querie(s) written.`);
+    consola.info(`${configQueries.length} querie(s) written.`);
   } else {
-    consola.info(`${Object.entries(config.queries).length} querie(s) and ${usedResolvers} resolver(s) written.`);
+    consola.info(`${configQueries.length} querie(s) and ${usedResolvers} resolver(s) written.`);
   }
   consola.info(`✅ All done. See output at ${opts.outPath}`);
 }
@@ -94,20 +100,28 @@ function processSchema<T extends Record<string, any>>(config: Config<T>, options
 }
 
 async function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, dir: string, options: Options) {
-  let resolverCode = "";
+  const resolverNames = Array.from(names).sort();
 
-  names.forEach((t) => {
-    let fnString = serializeJs(resolvers[t]);
+  for (const name of resolverNames) {
+    let fnString = serializeJs(resolvers[name]);
 
     if (options.trim) {
       fnString = trimString(fnString);
     }
 
-    return (resolverCode += `${options.trim ? '// prettier-ignore\n' : ''}export const ${t} = ${fnString}; \n \n`);
-  });
-  await writeTypeScript(path.resolve(dir, "index.ts"), resolverCode);
+    const code = `import {type Resolver} from 'sanity-generator/types'\n\n${options.trim ? "// prettier-ignore\n" : ""}export const ${name}: Resolver = ${fnString}`;
+
+    await writeTypeScript(path.resolve(dir, `${paramCase(name)}.ts`), code);
+  }
+
+  await writeBarrelFile(resolverNames, dir);
 }
 
 function trimString(str: string) {
   return str.replace(/\s+/g, " ");
+}
+
+async function writeBarrelFile(fileNames: string[], dir: string) {
+  const barrleCode = fileNames.reduce((acc, cur) => acc.concat(`export * from "./${paramCase(cur)}"\n`), "");
+  await writeTypeScript(path.resolve(dir, "index.ts"), barrleCode);
 }

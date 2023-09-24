@@ -1,7 +1,7 @@
-import {localeStringSchema, mediaSchema} from './objects'
+import {localeStringSchema, mediaSchema} from './types'
 import {pageSchema} from './documents'
 
 const documents = [pageSchema]
-const objects = [localeStringSchema, mediaSchema]
+const types = [localeStringSchema, mediaSchema]
 
-export const schemaTypes = [...objects, ...documents]
+export const schemaTypes = [...types, ...documents]
