@@ -1,9 +1,6 @@
-import { GeneratorSchemaDefinition} from './../../../src/types/index'
 import {defineArrayMember, defineField, defineType} from 'sanity'
-
-declare module 'sanity' {
-  interface BaseSchemaDefinition extends GeneratorSchemaDefinition {}
-}
+import {header} from '../factories'
+import {title} from 'process'
 
 type Page = any
 export const pageSchema: Page = defineType({
@@ -24,29 +21,27 @@ export const pageSchema: Page = defineType({
     defineField({
       type: 'localeString',
       title: 'Title (Open Graph)',
-      group: 'seo',
       name: 'seoTitle',
       description: 'Used for Open Graph previews implemented  by facebook, twitter, google etc.',
       generator: {
-        resolver: (name) => /* groq */`
+        resolver: (name) => /* groq */ `
           "${name}": {
             "germanTitle": ${name}.de,
             "englishTitle": ${name}.en
           }
-        `
+        `,
       },
     }),
+    header('pageHeader', 'content'),
     defineField({
       type: 'object',
       name: 'gallery',
-   
-   
+      group: 'content',
 
       fields: [
         defineField({
           type: 'localeString',
           name: 'sectionTitle',
-          
         }),
         defineField({
           type: 'array',
@@ -56,14 +51,30 @@ export const pageSchema: Page = defineType({
               type: 'object',
               name: 'slide',
               fields: [
+                defineField({
+                  name: 'image',
+                  type: 'image',
+                }),
                 {
                   type: 'string',
                   name: 'title',
                   generator: {
-                    resolver: (name) => /* groq */`"${name}": {"super": "cool"}`,
+                    resolver: (name) => /* groq */ `"${name}": {"super": "cool"}`,
                   },
                 },
               ],
+              preview: {
+                select: {
+                  title: 'title',
+                  image: "image"
+                },
+                prepare(props) {
+                  return {
+                    title: props.title,
+                    media: props.image
+                  }
+                },
+              },
             }),
           ],
         }),

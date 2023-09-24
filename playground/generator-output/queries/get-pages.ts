@@ -1,5 +1,10 @@
-import { inlineResolver0, localeString, inlineResolver1 } from "../resolver";
+import {
+  inlineResolver0,
+  inlineResolver1,
+  localeString,
+  inlineResolver2,
+} from "../resolver";
 
 // prettier-ignore
 export const getPages = /* groq */`
-*[_type == "page"] { ..., ${inlineResolver0("seoTitle")}, gallery { ..., ${localeString("sectionTitle")}, slides[] { ..., slide { ..., ${inlineResolver1("title")} } } }, sections[] { ..., gallerySection { ..., ${localeString("sectionTitle")}, slides[] { ..., slide { ..., ${localeString("title")} } } }, textSection { ..., ${localeString("title")} }, featuresSection { ..., ${localeString("title")}, ${localeString("subtitle")} } } }[0] `
+*[_type == "page"] { ..., ${inlineResolver0("seoTitle")}, ${inlineResolver1("pageHeader")}, gallery { ..., ${localeString("sectionTitle")}, slides[] { ..., slide { ..., ${inlineResolver2("title")} } } }, sections[] { ..., gallerySection { ..., ${localeString("sectionTitle")}, slides[] { ..., slide { ..., ${localeString("title")} } } }, textSection { ..., ${localeString("title")} }, featuresSection { ..., ${localeString("title")}, ${localeString("subtitle")} } } }[0] `

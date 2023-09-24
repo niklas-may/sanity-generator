@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "npx nodemon --ignore playground/generator-output/ --exec ts-node -- src/cli/main generate --config ./playground/sanity-generator.config.ts",
-    "dev:test": "npx nodemon --ignore test/generator-output/ --exec ts-node -- src/cli/main generate --config ./test/ressources/generator-config.ts",
+    "dev:test": "npx nodemon --ignore test/generator-output/ --exec ts-node -- src/cli/main generate --config ./test/ressources/generator-config-external-resolver-and-trim.ts",
     "dev:sanity": "yarn dev & cd playground && yarn dev",
     "preview": "npx ts-node src/cli/main generate --config ./client/sanity-generator.config.ts --watch ",
     "build": "rimraf ./build && tsc && cp -r src/static build/static",
