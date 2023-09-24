@@ -78,7 +78,8 @@ export class Projector {
     }, prevAcc ?? []);
   }
 
-  #warpField(objectMode: ObjectMode, children: string, name: string) {
+  #warpField(objectMode: ObjectMode, children: string, name: string, type: string) {
+    console.log(objectMode, name);
     if (objectMode === "wraped") {
       return `_type == '${name}' =>  {\n 
       ${children} 
@@ -87,6 +88,10 @@ export class Projector {
       return `
         ${children}
       `;
+    } else if (type === "object") {
+      return `${name} {
+        ${children}
+      }`;
     } else {
       return children;
     }
@@ -130,7 +135,8 @@ export class Projector {
                     this.#warpField(
                       objectMode,
                       this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0],
-                      curr.name
+                      curr.name,
+                      curr.type
                     ), index < fields.length - 1 ? ',' : ''
                   );
                 }
@@ -184,13 +190,14 @@ export class Projector {
 
                 if (shouldUnwrap) {
                   const lastOpenBrace = field.lastIndexOf("}");
-                  field = field.substring(firstOpenBrace + 1, lastOpenBrace);
+                  const unwrappedfield = field.substring(firstOpenBrace + 1, lastOpenBrace);
 
-                  consola.warn("WIP: Unwrap an object");
-                  console.log(this.resolvers[resolverName].toString());
+                  console.log("original", this.resolvers[resolverName].toString());
+                  console.log("unwrapped ", unwrappedfield);
+                  consola.info("WIP: Unwrap an object. See more above");
                 }
               }
-              return acc.concat(this.#warpField(objectMode, field, curr.name), ",\n");
+              return acc.concat(this.#warpField(objectMode, field, curr.name, "custom"), ",\n");
             } else {
               return acc;
             }
