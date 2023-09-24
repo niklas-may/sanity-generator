@@ -85,6 +85,9 @@ export function mediaFactory(name: string, group = '', options: Options = defaul
   })
 }
 
+
+
+
 const resolver: Resolver = (name) => /* groq */`
 ${name} {
     _type,
@@ -117,6 +120,3 @@ ${name} {
     
 }
 `
-
-
-

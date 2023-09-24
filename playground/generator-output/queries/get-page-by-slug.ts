@@ -41,32 +41,30 @@ export const getPageBySlug = /* groq */ `
       "sectionTitle": coalesce(sectionTitle[$lang], sectionTitle.en),
       slides[] {
         ...,
-        slide {
-          _type,
-          type,
-          type == "image" => {
-            image {
-              "title": asset->.title,
-              "altText": asset->.altText,
-              "src": asset->.url,
-              "metaData": {
-                "crop": crop,
-                "hotspot": hotspot,
-                "width": asset->.metadata.dimensions.width,
-                "height": asset->.metadata.dimensions.height
-              }
+        _type,
+        type,
+        type == "image" => {
+          image {
+            "title": asset->.title,
+            "altText": asset->.altText,
+            "src": asset->.url,
+            "metaData": {
+              "crop": crop,
+              "hotspot": hotspot,
+              "width": asset->.metadata.dimensions.width,
+              "height": asset->.metadata.dimensions.height
             }
+          }
+        },
+        type == "video" => {
+          "player": player.asset-> {
+            "playbackId": playbackId,
+            "ratio": data.aspect_ratio,
+            thumbTime
           },
-          type == "video" => {
-            "player": player.asset-> {
-              "playbackId": playbackId,
-              "ratio": data.aspect_ratio,
-              thumbTime
-            },
-            "mood": mood.asset-> {
-              "playbackId": playbackId,
-              "ratio": data.aspect_ratio
-            }
+          "mood": mood.asset-> {
+            "playbackId": playbackId,
+            "ratio": data.aspect_ratio
           }
         }
       }

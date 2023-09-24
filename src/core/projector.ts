@@ -150,9 +150,46 @@ export class Projector {
                 resolverName = curr.type;
                 types.add(resolverName);
               }
-              const field = inline
+              let field = inline
                 ? `${this.resolvers[resolverName](curr.name)}`
                 : `"__start_resolve": "${resolverName} ${curr.name}__end__resolve"`;
+
+              if (objectMode === "naked" && inline) {
+                /**
+                 * # What is a value?
+                 * Where: left (blank til) alpha followed by coma or blank followed by }
+                 * 
+                 * # When to match
+                 * When { or : is before the first value
+                 * 
+                 * # match
+                 * object {
+                 *   value
+                 * }
+                 * 
+                 * # match
+                 * "object": {
+                 *   value
+                 * }
+                 * 
+                 * # no match
+                 * "val": val
+                 * 
+                 */
+
+                const firstOpenBrace = field.indexOf("{");
+                const firstColon = field.indexOf(":");
+                const firstComa = field.indexOf(",");
+                const shouldUnwrap = firstOpenBrace < firstComa || firstColon < firstComa;
+
+                if (shouldUnwrap) {
+                  const lastOpenBrace = field.lastIndexOf("}");
+                  field = field.substring(firstOpenBrace + 1, lastOpenBrace);
+
+                  consola.warn("WIP: Unwrap an object");
+                  console.log(this.resolvers[resolverName].toString());
+                }
+              }
               return acc.concat(this.#warpField(objectMode, field, curr.name), ",\n");
             } else {
               return acc;
