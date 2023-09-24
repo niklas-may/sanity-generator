@@ -79,7 +79,6 @@ export class Projector {
   }
 
   #warpField(objectMode: ObjectMode, children: string, name: string, type: string) {
-    console.log(objectMode, name);
     if (objectMode === "wraped") {
       return `_type == '${name}' =>  {\n 
       ${children} 
