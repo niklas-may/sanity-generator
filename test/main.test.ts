@@ -24,19 +24,24 @@ describe.each(testConfigs)(`Run CLI from ${testSource} with $fileName`, async ({
     );
   });
 
-  for (const name of Object.keys(config.queries)) {
-    const filePath = path.join(options.outPath, "queries", `${paramCase(name)}.ts`);
+  const queries = Object.keys(config.queries).map((queryName) => ({ queryName }));
+
+  describe.each(queries)("Current Query: $queryName", ({ queryName }) => {
+    const filePath = path.join(options.outPath, "queries", `${paramCase(queryName)}.ts`);
 
     test(`Query file should exist`, () => {
       return expect(fs.existsSync(filePath)).toBe(true);
     });
 
     test(`Query file should compile`, async () => {
-      return await import(filePath).then((module) => expect(module[name]).toBeDefined());
+      return await importFresh(filePath).then((module) => {
+        console.log("Should compile");
+        return expect(module[queryName]).toBeDefined();
+      });
     });
 
     test(`Query file should have reference query`, () => {
-      return expectTypeOf(referenceConfig.queries[name]).toBeString();
+      return expectTypeOf(referenceConfig.queries[queryName]).toBeString();
     });
 
     test(
@@ -45,18 +50,18 @@ describe.each(testConfigs)(`Run CLI from ${testSource} with $fileName`, async ({
         const params = { lang: "en" };
 
         return Promise.all([
-          import(filePath).then(async (module) => {
-            const data = await client.fetch(module[name], params);
+          importFresh(filePath).then(async (module) => {
+            const data = await client.fetch(module[queryName], params);
             return data;
           }),
-          client.fetch(referenceConfig.queries[name], params),
+          client.fetch(referenceConfig.queries[queryName], params),
         ]).then(([res, resReference]) => {
           return expect(res).toStrictEqual(resReference);
         });
       },
       { retry: 3 }
     );
-  }
+  });
 });
 
 const execProm = util.promisify(exec);
@@ -67,3 +72,8 @@ const client = new PicoSanity({
   apiVersion: "2023-09-23",
   useCdn: false,
 });
+
+async function importFresh(modulePath: string) {
+  const cacheBustingModulePath = `${modulePath}?update=${Date.now()}`;
+  return await import(cacheBustingModulePath);
+}
