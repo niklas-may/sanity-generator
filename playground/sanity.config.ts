@@ -2,7 +2,7 @@ import {defineConfig} from 'sanity'
 import {deskTool} from 'sanity/desk'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemas'
-import { getPages } from './generator-output/queries/get-pages'
+import { getPages } from './generator-output/queries'
 
 import { createClient } from '@sanity/client'
 

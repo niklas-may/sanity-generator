@@ -78,7 +78,8 @@ export class Projector {
     }, prevAcc ?? []);
   }
 
-  #warpField(objectMode: ObjectMode, children: string, name: string) {
+  #warpField(objectMode: ObjectMode, children: string, name: string, type: string) {
+    console.log(objectMode, name);
     if (objectMode === "wraped") {
       return `_type == '${name}' =>  {\n 
       ${children} 
@@ -87,6 +88,10 @@ export class Projector {
       return `
         ${children}
       `;
+    } else if (type === "object") {
+      return `${name} {
+        ${children}
+      }`;
     } else {
       return children;
     }
@@ -130,8 +135,10 @@ export class Projector {
                     this.#warpField(
                       objectMode,
                       this.#projectNodeAndSpread({ fields: subFields, foundTypes: childCustomTypes, inline })[0],
-                      curr.name
-                    ), index < fields.length - 1 ? ',' : ''
+                      curr.name,
+                      curr.type
+                    ),
+                    index < fields.length - 1 ? "," : ""
                   );
                 }
               } else {
@@ -153,7 +160,7 @@ export class Projector {
               const field = inline
                 ? `${this.resolvers[resolverName](curr.name)}`
                 : `"__start_resolve": "${resolverName} ${curr.name}__end__resolve"`;
-              return acc.concat(this.#warpField(objectMode, field, curr.name), ",\n");
+              return acc.concat(this.#warpField(objectMode, field, curr.name, "custom"), ",\n");
             } else {
               return acc;
             }
