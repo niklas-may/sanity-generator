@@ -34,6 +34,7 @@ export type CreateConfigReturn<T extends Record<string, any>> = [Config<T>, Opti
 export type Options = {
   outPath?: string;
   inlineResolver?: boolean;
+  trim?: boolean
 };
 
 export interface GeneratorSchemaDefinition {

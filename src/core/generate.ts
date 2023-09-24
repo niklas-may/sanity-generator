@@ -29,8 +29,9 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
       const queryString = queryFn({ schemas: schemas });
 
       const query = await prettifyGroq(queryString);
+      const queryProcessed = opts.trim ? trimString(query) : query
 
-      const code = `export const ${queryName} = /* groq */\`\n${query}\``;
+      const code = `${opts.trim ? '// prettier-ignore\n' : ''}export const ${queryName} = /* groq */\`\n${queryProcessed}\``;
       const filePath = path.resolve(opts.outPath, "queries", `${paramCase(queryName)}.ts`);
 
       await writeTypeScript(filePath, code);
@@ -42,15 +43,17 @@ export async function generate<T extends Record<string, any>>(config: Config<T>,
     usedResolvers = types.size;
     createMissingDirectories(path.join(opts.outPath, "resolver"));
 
-    wirteResolver(types, resolvers, path.join(opts.outPath, "resolver"));
+    wirteResolver(types, resolvers, path.join(opts.outPath, "resolver"), opts);
 
     for (const [queryName, queryFn] of Object.entries(config.queries)) {
       const queryTemplate = await prettifyGroq(queryFn({ schemas: schemas }));
       const { query, resolverDependencies } = Projector.insertResolver(queryTemplate);
 
+      const queryProcessed = opts.trim ? trimString(query) : query
+
       const code = [
         resolverDependencies.size > 0 ? `import { ${[...resolverDependencies].join(", ")}} from '../resolver'\n` : "",
-        `export const ${queryName} = /* groq */\`\n${query}\``,
+        `${opts.trim ? '// prettier-ignore\n' : ''} export const ${queryName} = /* groq */\`\n${queryProcessed}\``,
       ]
         .filter(Boolean)
         .join("\n");
@@ -90,9 +93,21 @@ function processSchema<T extends Record<string, any>>(config: Config<T>, options
   return { schemas, types, resolvers: projector.resolvers };
 }
 
-async function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, dir: string) {
+async function wirteResolver(names: Set<string>, resolvers: Record<string, Resolver>, dir: string, options: Options) {
   let resolverCode = "";
 
-  names.forEach((t) => (resolverCode += `export const ${t} = ${serializeJs(resolvers[t])}; \n \n`));
+  names.forEach((t) => {
+    let fnString = serializeJs(resolvers[t]);
+
+    if (options.trim) {
+      fnString = trimString(fnString);
+    }
+
+    return (resolverCode += `${options.trim ? '// prettier-ignore\n' : ''}export const ${t} = ${fnString}; \n \n`);
+  });
   await writeTypeScript(path.resolve(dir, "index.ts"), resolverCode);
+}
+
+function trimString(str: string) {
+  return str.replace(/\s+/g, " ");
 }

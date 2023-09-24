@@ -7,7 +7,7 @@ export function createMissingDirectories(targetPath: string) {
 }
 
 export async function prettifyTypeScript(code: string) {
-  return await prettier.format(code, { parser: "babel-ts" });
+  return await prettier.format(code, { parser: "babel-ts"});
 }
 
 export async function writeTypeScript(filePath: string, code: string) {

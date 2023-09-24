@@ -31,6 +31,7 @@ export default createConfig(
   },
   {
     inlineResolver: false,
+    trim: true,
     outPath: path.resolve(__dirname, './generator-output'),
   },
 )

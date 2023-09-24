@@ -11,7 +11,11 @@ import referenceConfig from "./ressources/reference-config";
 const [config, options] = generatorConfig;
 
 const testSource = process.env.NODE_ENV === "test" ? "build/cli/main.js" : "src/cli/main";
-const testConfigs = [{ fileName: "generator-config-base.ts" }, { fileName: "generator-config-external-resolver.ts" }];
+const testConfigs = [
+  { fileName: "generator-config-base.ts" },
+  { fileName: "generator-config-external-resolver.ts" },
+  { fileName: "generator-config-external-resolver-and-trim.ts" },
+];
 
 describe.each(testConfigs)(`Run CLI from ${testSource} with $fileName`, async ({ fileName }) => {
   test("Generate with custom config should work", async () => {
