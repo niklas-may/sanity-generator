@@ -22,5 +22,5 @@
     }
   },
   "exclude": ["playground", "build", "src/static"],
-  "include": ["src", "test/generator-output"]
+  "include": ["src"]
 }
